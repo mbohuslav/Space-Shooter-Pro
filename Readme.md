@@ -1,1 +1,2 @@
-# GameDevHQ-Projects
+# Space-Shooter-Pro
+2D Game Development
