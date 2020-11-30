@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-     [SerializeField]
-    private float _speed = 7f;
     [SerializeField]
-    private float _speedMultiplier = 2.25f;
+    private float _speed = 4f;
+    private float _maxSpeed = 12f;
+    private float _timeZerotoMax = 7f;
+    private float _accelRatePerSec;
+    private float _velocity;
+    [SerializeField]
+    private float _speedMultiplier = 4f;
     
     [SerializeField]
     private GameObject _laserPrefab;
@@ -54,10 +58,9 @@ public class Player : MonoBehaviour
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _audioSource = GetComponent<AudioSource>();
-        
-        
+        _accelRatePerSec = _maxSpeed / _timeZerotoMax;
 
-        if(_spawnManager == null)
+        if (_spawnManager == null)
         {
             Debug.LogError("The Spawn Manager is NULL."); 
         }
@@ -91,23 +94,34 @@ public class Player : MonoBehaviour
     }
     void CalculateMovement()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-
-        //new Vector3(1, 0, 0) * 0 * 3.5f * real time
-        // BASIC
-        // transform.Translate(Vector3.right * horizontalInput * _speed * Time.deltaTime);
-        // transform.Translate(Vector3.up * verticalInput * _speed * Time.deltaTime);
-        //BETTER
-        // transform.Translate(new Vector3(horizontalInput, verticalInput, 0) * _speed * Time.deltaTime);
-
-        // BEST
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        float verticalInput = Input.GetAxisRaw("Vertical");
+     
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
-       if (_speedBoostActive == false)
-        { 
-          transform.Translate(direction * _speed * Time.deltaTime);
+
+
+        if (_speedBoostActive == false)
+        {
+            if (Input.GetKey(KeyCode.LeftShift) == true)
+            {
+                _velocity += _accelRatePerSec * Time.deltaTime;
+                _velocity = Mathf.Min(_velocity, _maxSpeed);
+                transform.Translate(direction * (_speed + _velocity) * Time.deltaTime);
+            }
+
+           if (Input.GetKeyUp(KeyCode.LeftShift) == true)
+            {
+                    _velocity = 0;
+                    transform.Translate(direction * (_speed + _velocity) * Time.deltaTime);
+            }
+           
+            else
+            {
+                transform.Translate(direction * _speed * Time.deltaTime);
+            }
+
         }
-       else
+        else
         {
             transform.Translate(direction * (_speedMultiplier * _speed) * Time.deltaTime);
         }

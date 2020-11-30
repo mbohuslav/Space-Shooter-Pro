@@ -50,7 +50,12 @@ public class Enemy_Laser : MonoBehaviour
         }
         if (other.tag == "Enemy")
         {
-            Destroy(this.gameObject);
+            Enemy enemy = other.transform.GetComponent<Enemy>();
+
+            if (enemy  != null)
+            {
+                Destroy(this.gameObject);
+            }
         }
     }
 
