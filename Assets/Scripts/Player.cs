@@ -20,8 +20,10 @@ public class Player : MonoBehaviour
     private float _canFire = -1f;
     [SerializeField]
     private int _ammoCount = 15;
+    private float _ammoRegen = 2;
+    private float _canRegen= -1;
     private float _ImmunityStart = 0f;
-    public float ImmunityDuration = 2f;
+    public float ImmunityDuration = 1f;
     
 
     [SerializeField]
@@ -98,13 +100,18 @@ public class Player : MonoBehaviour
     {
         CalculateMovement();
 
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire && _lives >0)
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire && _lives > 0)
         {
             FireLaser();
         }
-
-
-    }
+     
+        if (Time.time > _canRegen & _ammoCount <15)
+        {
+            _ammoCount += 1;
+            _canRegen = Time.time + _ammoRegen;
+            _uiManager.UpdateAmmo(_ammoCount);
+        }
+}
     void CalculateMovement()
     {
         float horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -213,21 +220,6 @@ public class Player : MonoBehaviour
             return;
         }
 
-
-
-
-        /*    if (_shieldLevel == 0)
-            {
-                _shieldsActive = false;
-                _shieldVisualizer[0].SetActive(false);
-            }
-            else
-            {
-                _shieldVisualizer[_shieldLevel+1].SetActive(false);
-                _shieldVisualizer[_shieldLevel].SetActive(true);
-            }
-            //return;
-        } */
         if (_ImmunityStart <= Time.time && _lives > 0)
         {
             _lives -= 1; //_lives --;   same function
@@ -329,15 +321,47 @@ public class Player : MonoBehaviour
                 Debug.Log("Not a valid Shield Strength");
                 break;
         }
-    
-
-     //  _shieldsActive = true;
-     //  _shieldVisualizer[_shieldLevel].SetActive(true);
-
-       
     }
-  
-  
+
+    public void AmmoActive()
+    {
+        _ammoCount = 15;
+        _uiManager.UpdateAmmo(_ammoCount);
+    }
+
+    public void HealthActive()
+    {
+        if (_lives == 3)
+        {
+            _lives = 3;
+        }
+        else
+        {
+            _lives += 1;
+            _uiManager.Updatelives(_lives);
+
+            if (_leftEngineVisualizer.activeSelf == true && _rightEngineVisualizer.activeSelf == true)
+            {
+                _leftEngineVisualizer.SetActive(false);
+            }
+            
+            else if (_leftEngineVisualizer.activeSelf == true && _rightEngineVisualizer.activeSelf == false)
+            {
+                _leftEngineVisualizer.SetActive(false);
+            }
+                  
+            else if (_leftEngineVisualizer.activeSelf == false && _rightEngineVisualizer.activeSelf == true)
+            { 
+                _rightEngineVisualizer.SetActive(false);
+            }
+                   
+            
+
+        }
+
+    }
+
+
     public void AddScore(int points)
     {
         _score += points;

@@ -8,7 +8,7 @@ public class PowerUp : MonoBehaviour
     [SerializeField]
     private float _speed =3.0f;
     [SerializeField] 
-    private int _powerUpID;  // 0 = Tripple Shot 1 = Speed 2 = Shields
+    private int _powerUpID; 
     [SerializeField]
     private AudioClip _clip;
 
@@ -47,6 +47,12 @@ public class PowerUp : MonoBehaviour
                         break;                    
                     case 2:
                         player.ShieldsActive();
+                        break;
+                    case 3:
+                        player.AmmoActive();
+                        break;
+                    case 4:
+                        player.HealthActive();
                         break;
                     default:
                         Debug.Log("Not a Valid Power Up");
