@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _speed = 4f;
     private float _maxSpeed = 12f;
-    private float _timeZerotoMax = 7f;
+    private float _timeZerotoMax = 5f;
     private float _accelRatePerSec;
     private float _velocity;
     [SerializeField]
@@ -18,9 +18,12 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _fireRate = 0.15f;
     private float _canFire = -1f;
+    [SerializeField]
+    private int _ammoCount = 15;
     private float _ImmunityStart = 0f;
     public float ImmunityDuration = 2f;
     
+
     [SerializeField]
     private int _lives = 3;
     [SerializeField]
@@ -28,15 +31,17 @@ public class Player : MonoBehaviour
 
     private UIManager _uiManager;
     private SpawnManager _spawnManager;
-    
+
     private bool _tripleShotActive = false;
     private bool _speedBoostActive = false;
+    
     private bool _shieldsActive = false;
-
+    public int _shieldLevel = 0;
+    [SerializeField]
+    private GameObject[] _shieldVisualizer;
+    
     [SerializeField]
     private GameObject _tripleShotPrefab;
-    [SerializeField]
-    private GameObject _shieldVisualizer;
     [SerializeField]
     private GameObject _leftEngineVisualizer, _rightEngineVisualizer;
     [SerializeField]
@@ -46,8 +51,14 @@ public class Player : MonoBehaviour
     [SerializeField]
     private AudioClip _laserSound;
     [SerializeField]
+    private AudioClip _noAmmoSound;
+    [SerializeField]
     private GameObject _explosionPrefab;
     public GameObject playerChildHolder;
+
+
+    
+
     // bool resetPowerUp;
 
 
@@ -59,6 +70,7 @@ public class Player : MonoBehaviour
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _audioSource = GetComponent<AudioSource>();
         _accelRatePerSec = _maxSpeed / _timeZerotoMax;
+        
 
         if (_spawnManager == null)
         {
@@ -73,6 +85,7 @@ public class Player : MonoBehaviour
         {
             Debug.LogError(" The Audio Source on Player is NULL");
         }
+        
         else
         {
             _audioSource.clip = _laserSound;
@@ -140,21 +153,31 @@ public class Player : MonoBehaviour
 
     void FireLaser()
     {
-        _canFire = Time.time + _fireRate;
-
-       if (_tripleShotActive == true)
+        if (_ammoCount > 0)
         {
-            Instantiate(_tripleShotPrefab, transform.position + new Vector3(-1.34f, 0.82f, 0), Quaternion.identity);  
+            _ammoCount -= 1;
+
+            _canFire = Time.time + _fireRate;
+
+            if (_tripleShotActive == true)
+            {
+                Instantiate(_tripleShotPrefab, transform.position + new Vector3(-1.34f, 0.82f, 0), Quaternion.identity);
+            }
+
+            else
+            {
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
+            }
+            _audioSource.clip = _laserSound;
+            _audioSource.Play();
+            _uiManager.UpdateAmmo(_ammoCount);
+        }
+        else
+        {
+            _audioSource.clip = _noAmmoSound;
+            _audioSource.Play();
         }
 
-       else
-        {
-            Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
-        }
-        _audioSource.clip = _laserSound;
-        _audioSource.Play();
-       
-     
 
     }
 
@@ -162,17 +185,53 @@ public class Player : MonoBehaviour
     {
         _audioSource.clip = _playerExplosion;
         _audioSource.Play();
-        
-        if (_shieldsActive == true)
+
+        if (_shieldsActive == true  && _ImmunityStart <= Time.time)
         {
-            _shieldsActive = false;
-            _shieldVisualizer.SetActive(false);
+            _shieldLevel -= 1;
+            _ImmunityStart = Time.time + ImmunityDuration;
+
+            switch (_shieldLevel)
+            {
+             
+                case 0:
+                    _shieldVisualizer[0].SetActive(false);
+                    _shieldsActive = false;
+                    break;
+                case 1:
+                    _shieldVisualizer[1].SetActive(false);
+                    _shieldVisualizer[0].SetActive(true);
+                    break;
+                case 2:
+                    _shieldVisualizer[2].SetActive(false);
+                    _shieldVisualizer[1].SetActive(true);
+                     break;
+                default:
+                    Debug.Log("Not a valid Shield Strength");
+                    break;
+            }
             return;
         }
-        if (_ImmunityStart <= Time.time && _lives >0)
+
+
+
+
+        /*    if (_shieldLevel == 0)
+            {
+                _shieldsActive = false;
+                _shieldVisualizer[0].SetActive(false);
+            }
+            else
+            {
+                _shieldVisualizer[_shieldLevel+1].SetActive(false);
+                _shieldVisualizer[_shieldLevel].SetActive(true);
+            }
+            //return;
+        } */
+        if (_ImmunityStart <= Time.time && _lives > 0)
         {
             _lives -= 1; //_lives --;   same function
-           
+
 
             int randomEngineVisualizer = Random.Range(0, 2);
             switch (randomEngineVisualizer)
@@ -203,7 +262,7 @@ public class Player : MonoBehaviour
             }
 
             _uiManager.Updatelives(_lives);
-            _ImmunityStart = Time.time + ImmunityDuration; 
+            _ImmunityStart = Time.time + ImmunityDuration;
         }
        
         if (_lives <1)
@@ -247,11 +306,38 @@ public class Player : MonoBehaviour
     }
 
    public void ShieldsActive()
-    {   
-        _shieldsActive = true;
-        _shieldVisualizer.SetActive(true);
-    }
+    {
 
+       switch (_shieldLevel)
+        {
+            case 0:
+                _shieldsActive = true;
+                _shieldVisualizer[0].SetActive(true);
+                _shieldLevel = 1;
+                break;
+            case 1:
+                _shieldVisualizer[1].SetActive(true);
+                _shieldVisualizer[0].SetActive(false);
+                _shieldLevel = 2;
+                break;
+            case 2:
+                _shieldVisualizer[2].SetActive(true);
+                _shieldVisualizer[1].SetActive(false);
+                _shieldLevel = 3;
+                 break;
+           default:
+                Debug.Log("Not a valid Shield Strength");
+                break;
+        }
+    
+
+     //  _shieldsActive = true;
+     //  _shieldVisualizer[_shieldLevel].SetActive(true);
+
+       
+    }
+  
+  
     public void AddScore(int points)
     {
         _score += points;

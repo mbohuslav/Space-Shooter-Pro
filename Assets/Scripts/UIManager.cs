@@ -15,6 +15,12 @@ public class UIManager : MonoBehaviour
     private Text _gameOver;
     [SerializeField]
     private Text _restartText;
+    [SerializeField]
+    private Sprite[] _ammoCount;
+    [SerializeField]
+    private Image _AmmoImg;
+    
+
 
     private GameManager _gameManager;
 
@@ -32,7 +38,17 @@ public class UIManager : MonoBehaviour
             Debug.LogError("GameManager is NULL");
         }
     }
+    public void UpdateAmmo(int currentAmmo)
+    {
+        _AmmoImg.sprite = _ammoCount[currentAmmo];
 
+        if (currentAmmo == 0)
+        {
+
+        }
+    }
+    
+    
     public void Updatelives(int currentlives)
     {       
         _LivesImg.sprite = _livesprites[currentlives];
@@ -63,8 +79,6 @@ public class UIManager : MonoBehaviour
         
     }
     
-    
-
     // Update is called once per frame
     void Update()
     {
