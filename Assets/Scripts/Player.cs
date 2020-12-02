@@ -23,8 +23,7 @@ public class Player : MonoBehaviour
     private float _ammoRegen = 2;
     private float _canRegen = -1;
     private float _ImmunityStart = 0f;
-    public float ImmunityDuration = 1f;
-
+    public float ImmunityDuration = 0.75f;
 
     [SerializeField]
     private int _lives = 3;
@@ -33,6 +32,7 @@ public class Player : MonoBehaviour
 
     private UIManager _uiManager;
     private SpawnManager _spawnManager;
+    private Main_Camera _mainCamera; 
 
     private bool _tripleShotActive = false;
     private bool _speedBoostActive = false;
@@ -60,7 +60,7 @@ public class Player : MonoBehaviour
     private GameObject _explosionPrefab;
     public GameObject playerChildHolder;
 
-
+    
 
 
     // bool resetPowerUp;
@@ -74,13 +74,12 @@ public class Player : MonoBehaviour
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _audioSource = GetComponent<AudioSource>();
         _accelRatePerSec = _maxSpeed / _timeZerotoMax;
-
+        _mainCamera = GameObject.Find("Main Camera").GetComponent<Main_Camera>();
 
         if (_spawnManager == null)
         {
             Debug.LogError("The Spawn Manager is NULL.");
         }
-
         if (_uiManager == null)
         {
             Debug.LogError("The UI Manager is NULL");
@@ -89,6 +88,12 @@ public class Player : MonoBehaviour
         {
             Debug.LogError(" The Audio Source on Player is NULL");
         }
+        if (_mainCamera == null)
+        {
+            Debug.LogError(" the Main Camera is NULL");
+        }
+
+
 
         else
         {
@@ -209,6 +214,7 @@ public class Player : MonoBehaviour
     {
         _audioSource.clip = _playerExplosion;
         _audioSource.Play();
+        _mainCamera.shake();
 
         if (_shieldsActive == true  && _ImmunityStart <= Time.time)
         {
@@ -239,9 +245,9 @@ public class Player : MonoBehaviour
 
         if (_ImmunityStart <= Time.time && _lives > 0)
         {
+            
             _lives -= 1; //_lives --;   same function
-
-
+            
             int randomEngineVisualizer = Random.Range(0, 2);
             switch (randomEngineVisualizer)
             {
@@ -308,11 +314,18 @@ public class Player : MonoBehaviour
         StartCoroutine(SpeedBoostPowerDownRoutine());
     }
     IEnumerator SpeedBoostPowerDownRoutine()
-    {        
-        yield return new WaitForSeconds(5.0f);
-        _speedBoostActive = false;
-        _thrusterVisualizer[1].SetActive(false);
-        _thrusterVisualizer[0].SetActive(true);
+    {
+        if ((GameObject.Find("Thruster") == null) || (GameObject.Find("ThrusterOn") == null))
+        {
+            Debug.LogError("The Spawn Manager is NULL.");
+        }
+        else
+        {
+            yield return new WaitForSeconds(5.0f);
+            _speedBoostActive = false;
+            _thrusterVisualizer[1].SetActive(false);
+            _thrusterVisualizer[0].SetActive(true);
+        }
     }
 
    public void ShieldsActive()

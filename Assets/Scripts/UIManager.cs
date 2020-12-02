@@ -21,15 +21,14 @@ public class UIManager : MonoBehaviour
     private Image _AmmoImg;
     [SerializeField]
     private Image _thrusterReserve;
-    private float _ScaleRate = 0.35f;
+    private float _depletionRate = 0.40f;
+    private float _ThrusterRecharge = 0.07f;
+    private float _ThrusterAccelRecharge = 1f;
     private float _maxThrusterReserve = 1.75f;
     private float _currentThrusterReserve;
 
-
     public bool ThrusterActive = true;
-    public float ThrusterCooldown = 7f;
-    public float ThrusterTime;
-    public float MaxThrusterTime = 5f;
+    
 
 
     public float _timestamp;
@@ -92,7 +91,7 @@ public class UIManager : MonoBehaviour
             yield return new WaitForSeconds(0.4f);
             _gameOver.gameObject.SetActive(false);
             yield return new WaitForSeconds(0.4f);
-   
+            
         }
         
     }
@@ -100,37 +99,41 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if (Input.GetKeyDown(KeyCode.LeftShift) == true)
-        {
-            _timestamp = Time.deltaTime;
-        }
-
         if (Input.GetKey(KeyCode.LeftShift) == true && ThrusterActive == true && _currentThrusterReserve > 0)
         {
             _player.ThrusterActive(true);
-            _currentThrusterReserve -= _ScaleRate * (_timestamp);
+            _currentThrusterReserve -= _depletionRate * Time.deltaTime;
+            _currentThrusterReserve = Mathf.Clamp(0, _currentThrusterReserve, 0);
             _thrusterReserve.rectTransform.localScale = new Vector3(_currentThrusterReserve, 0.35f, 1);
         }
-
+        if (Input.GetKey(KeyCode.LeftShift) == false && ThrusterActive == true && _currentThrusterReserve > 0)
+        {
+            _currentThrusterReserve += _ThrusterRecharge * Time.deltaTime;
+            _currentThrusterReserve = Mathf.Min(_maxThrusterReserve, _currentThrusterReserve);
+            _thrusterReserve.rectTransform.localScale = new Vector3(_currentThrusterReserve, 0.35f, 1);
+        }
 
         if (_currentThrusterReserve <= 0)
         {
             _player.ThrusterActive(false);
             StartCoroutine(ThrusterCoolDown());
         }
-
     }
+  
     IEnumerator ThrusterCoolDown()
     {
-        _currentThrusterReserve = _maxThrusterReserve;
         ThrusterActive = false;
-        yield return new WaitForSeconds(8.0f);
-        _thrusterReserve.rectTransform.localScale = new Vector3(_currentThrusterReserve, 0.35f, 1);
+        yield return new WaitForSeconds(5.0f);
         ThrusterActive = true;
-        
+        ThrusterRefill();
     }
 
+    private void ThrusterRefill()
+    {
+        _currentThrusterReserve += (_ThrusterAccelRecharge * Time.deltaTime);
+        _currentThrusterReserve = Mathf.Min(_maxThrusterReserve, _currentThrusterReserve);
+        _thrusterReserve.rectTransform.localScale = new Vector3(_currentThrusterReserve, 0.35f, 1);
+    }
 
     public void UpdateScore(int playerScore)
     {

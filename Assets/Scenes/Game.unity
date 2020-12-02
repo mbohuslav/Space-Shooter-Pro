@@ -334,6 +334,7 @@ GameObject:
   - component: {fileID: 509824737}
   - component: {fileID: 509824736}
   - component: {fileID: 509824739}
+  - component: {fileID: 509824740}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -466,6 +467,20 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+--- !u!114 &509824740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509824735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d505bc0c1001ed645a5f0acb570c1fbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CameraShakeStrength: 0.04
+  ShakeDuration: 0.15
 --- !u!1 &643306652
 GameObject:
   m_ObjectHideFlags: 0
@@ -1723,6 +1738,75 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1619398574
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5053332432526984724, guid: b8f793211ba2a094a8ff52a2151a312b,
+        type: 3}
+      propertyPath: m_Name
+      value: Shields_Powerup
+      objectReference: {fileID: 0}
+    - target: {fileID: 5053332432526984727, guid: b8f793211ba2a094a8ff52a2151a312b,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5053332432526984727, guid: b8f793211ba2a094a8ff52a2151a312b,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5053332432526984727, guid: b8f793211ba2a094a8ff52a2151a312b,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5053332432526984727, guid: b8f793211ba2a094a8ff52a2151a312b,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5053332432526984727, guid: b8f793211ba2a094a8ff52a2151a312b,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5053332432526984727, guid: b8f793211ba2a094a8ff52a2151a312b,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5053332432526984727, guid: b8f793211ba2a094a8ff52a2151a312b,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5053332432526984727, guid: b8f793211ba2a094a8ff52a2151a312b,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5053332432526984727, guid: b8f793211ba2a094a8ff52a2151a312b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5053332432526984727, guid: b8f793211ba2a094a8ff52a2151a312b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5053332432526984727, guid: b8f793211ba2a094a8ff52a2151a312b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b8f793211ba2a094a8ff52a2151a312b, type: 3}
 --- !u!1 &1654354761
 GameObject:
   m_ObjectHideFlags: 0
@@ -1870,10 +1954,7 @@ MonoBehaviour:
   _AmmoImg: {fileID: 1998192461}
   _thrusterReserve: {fileID: 1784928574}
   ThrusterActive: 1
-  ThrusterCooldown: 0
-  ThrusterTime: 0
-  MaxThrusterTime: 5
-  timer: 5
+  _timestamp: 0
 --- !u!1 &1668909863
 GameObject:
   m_ObjectHideFlags: 0
@@ -2174,8 +2255,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1990100511}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.11, z: 0}
-  m_LocalScale: {x: 1.0690333, y: 1.0873973, z: 1}
+  m_LocalPosition: {x: 0.036, y: -0.061, z: 0}
+  m_LocalScale: {x: 1.0999126, y: 1.1199623, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
