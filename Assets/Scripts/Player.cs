@@ -7,12 +7,12 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _speed = 4f;
     private float _maxSpeed = 12f;
-    private float _timeZerotoMax = 5f;
+    private float _timeZerotoMax = 4f;
     private float _accelRatePerSec;
     private float _velocity;
     [SerializeField]
     private float _speedMultiplier = 4f;
-    
+
     [SerializeField]
     private GameObject _laserPrefab;
     [SerializeField]
@@ -21,10 +21,10 @@ public class Player : MonoBehaviour
     [SerializeField]
     private int _ammoCount = 15;
     private float _ammoRegen = 2;
-    private float _canRegen= -1;
+    private float _canRegen = -1;
     private float _ImmunityStart = 0f;
     public float ImmunityDuration = 1f;
-    
+
 
     [SerializeField]
     private int _lives = 3;
@@ -36,12 +36,14 @@ public class Player : MonoBehaviour
 
     private bool _tripleShotActive = false;
     private bool _speedBoostActive = false;
-    
+    private bool isThrusterActive = true;
     private bool _shieldsActive = false;
     public int _shieldLevel = 0;
     [SerializeField]
     private GameObject[] _shieldVisualizer;
-    
+    [SerializeField]
+    private GameObject[] _thrusterVisualizer;
+
     [SerializeField]
     private GameObject _tripleShotPrefab;
     [SerializeField]
@@ -59,7 +61,7 @@ public class Player : MonoBehaviour
     public GameObject playerChildHolder;
 
 
-    
+
 
     // bool resetPowerUp;
 
@@ -72,14 +74,14 @@ public class Player : MonoBehaviour
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _audioSource = GetComponent<AudioSource>();
         _accelRatePerSec = _maxSpeed / _timeZerotoMax;
-        
+
 
         if (_spawnManager == null)
         {
-            Debug.LogError("The Spawn Manager is NULL."); 
+            Debug.LogError("The Spawn Manager is NULL.");
         }
 
-        if(_uiManager == null)
+        if (_uiManager == null)
         {
             Debug.LogError("The UI Manager is NULL");
         }
@@ -87,13 +89,13 @@ public class Player : MonoBehaviour
         {
             Debug.LogError(" The Audio Source on Player is NULL");
         }
-        
+
         else
         {
             _audioSource.clip = _laserSound;
         }
 
-}
+    }
 
     // Update is called once per frame
     void Update()
@@ -104,14 +106,19 @@ public class Player : MonoBehaviour
         {
             FireLaser();
         }
-     
-        if (Time.time > _canRegen & _ammoCount <15)
+
+        if (Time.time > _canRegen & _ammoCount < 15)
         {
             _ammoCount += 1;
             _canRegen = Time.time + _ammoRegen;
             _uiManager.UpdateAmmo(_ammoCount);
         }
-}
+    }
+    public void ThrusterActive(bool active)
+    {
+     isThrusterActive = active;
+    }    
+    
     void CalculateMovement()
     {
         float horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -119,32 +126,42 @@ public class Player : MonoBehaviour
      
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
 
-
-        if (_speedBoostActive == false)
+        if (GetComponent<Collider2D>() != null)
         {
-            if (Input.GetKey(KeyCode.LeftShift) == true)
+            if (_speedBoostActive == false)
             {
-                _velocity += _accelRatePerSec * Time.deltaTime;
-                _velocity = Mathf.Min(_velocity, _maxSpeed);
-                transform.Translate(direction * (_speed + _velocity) * Time.deltaTime);
-            }
+                if (Input.GetKey(KeyCode.LeftShift) == true && isThrusterActive == true)
+                {
+                    _velocity += _accelRatePerSec * Time.deltaTime;
+                    _velocity = Mathf.Min(_velocity, _maxSpeed);
+                    transform.Translate(direction * (_speed + _velocity) * Time.deltaTime);
 
-           if (Input.GetKeyUp(KeyCode.LeftShift) == true)
-            {
+                    _thrusterVisualizer[1].SetActive(true);
+                    _thrusterVisualizer[0].SetActive(false);
+                }
+
+                if (Input.GetKeyUp(KeyCode.LeftShift) == true || isThrusterActive == false)
+                {
                     _velocity = 0;
                     transform.Translate(direction * (_speed + _velocity) * Time.deltaTime);
-            }
-           
-            else
-            {
-                transform.Translate(direction * _speed * Time.deltaTime);
+                    _thrusterVisualizer[0].SetActive(true);
+                    _thrusterVisualizer[1].SetActive(false);
+                }
+
+                else
+                {
+                    transform.Translate(direction * _speed * Time.deltaTime);
+                }
+
             }
 
-        }
-        else
-        {
-            transform.Translate(direction * (_speedMultiplier * _speed) * Time.deltaTime);
-        }
+            else
+            {
+                transform.Translate(direction * (_speedMultiplier * _speed) * Time.deltaTime);
+                _thrusterVisualizer[1].SetActive(true);
+                _thrusterVisualizer[0].SetActive(false);
+            }
+        }     
 
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -4.8f, 0), 0);
 
@@ -265,10 +282,9 @@ public class Player : MonoBehaviour
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
             _speed = 0;
             Destroy(GetComponent<SpriteRenderer>(), 0.25f);
+            Destroy(GetComponent<Collider2D>());
             foreach (Transform child in playerChildHolder.transform)
-            {
-                  Destroy(child.gameObject);
-             }
+             Destroy(child.gameObject);
             Destroy(this.gameObject, 3.018f);
         }
         
@@ -292,35 +308,42 @@ public class Player : MonoBehaviour
         StartCoroutine(SpeedBoostPowerDownRoutine());
     }
     IEnumerator SpeedBoostPowerDownRoutine()
-    {
+    {        
         yield return new WaitForSeconds(5.0f);
         _speedBoostActive = false;
+        _thrusterVisualizer[1].SetActive(false);
+        _thrusterVisualizer[0].SetActive(true);
     }
 
    public void ShieldsActive()
     {
+        _shieldsActive = true;
+        _shieldVisualizer[0].SetActive(false);
+        _shieldVisualizer[1].SetActive(false);
+        _shieldVisualizer[2].SetActive(true);
+        _shieldLevel = 3;
 
-       switch (_shieldLevel)
-        {
-            case 0:
-                _shieldsActive = true;
-                _shieldVisualizer[0].SetActive(true);
-                _shieldLevel = 1;
-                break;
-            case 1:
-                _shieldVisualizer[1].SetActive(true);
-                _shieldVisualizer[0].SetActive(false);
-                _shieldLevel = 2;
-                break;
-            case 2:
-                _shieldVisualizer[2].SetActive(true);
-                _shieldVisualizer[1].SetActive(false);
-                _shieldLevel = 3;
-                 break;
-           default:
-                Debug.Log("Not a valid Shield Strength");
-                break;
-        }
+        /* switch (_shieldLevel)
+          {
+              case 0:
+                  _shieldsActive = true;
+                  _shieldVisualizer[0].SetActive(true);
+                  _shieldLevel = 1;
+                  break;
+              case 1:
+                  _shieldVisualizer[1].SetActive(true);
+                  _shieldVisualizer[0].SetActive(false);
+                  _shieldLevel = 2;
+                  break;
+              case 2:
+                  _shieldVisualizer[2].SetActive(true);
+                  _shieldVisualizer[1].SetActive(false);
+                  _shieldLevel = 3;
+                   break;
+             default:
+                  Debug.Log("Not a valid Shield Strength");
+                  break;
+          } */
     }
 
     public void AmmoActive()
@@ -344,17 +367,26 @@ public class Player : MonoBehaviour
             {
                 _leftEngineVisualizer.SetActive(false);
             }
-            
+
             else if (_leftEngineVisualizer.activeSelf == true && _rightEngineVisualizer.activeSelf == false)
             {
                 _leftEngineVisualizer.SetActive(false);
             }
-                  
+
             else if (_leftEngineVisualizer.activeSelf == false && _rightEngineVisualizer.activeSelf == true)
-            { 
+            {
                 _rightEngineVisualizer.SetActive(false);
             }
-                   
+
+         //   else if (_leftEngineVisualizer.activeSelf == false && _rightEngineVisualizer.activeSelf == false)
+        //    { }
+
+            else if (_leftEngineVisualizer == null && _rightEngineVisualizer == null)
+            {
+                Debug.Log("_Engine Visualizers are NUll");
+            }
+
+            
             
 
         }

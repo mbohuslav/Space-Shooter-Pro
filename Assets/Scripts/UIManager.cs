@@ -19,24 +19,43 @@ public class UIManager : MonoBehaviour
     private Sprite[] _ammoCount;
     [SerializeField]
     private Image _AmmoImg;
-    
+    [SerializeField]
+    private Image _thrusterReserve;
+    private float _ScaleRate = 0.35f;
+    private float _maxThrusterReserve = 1.75f;
+    private float _currentThrusterReserve;
 
+
+    public bool ThrusterActive = true;
+    public float ThrusterCooldown = 7f;
+    public float ThrusterTime;
+    public float MaxThrusterTime = 5f;
+
+
+    public float _timestamp;
+    private Player _player;
 
     private GameManager _gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
-      // _livesprites[CurrentPlayerLives = 3];
+        _player = GameObject.Find("Player").GetComponent<Player>();
+        if (_player == null)
+        {
+            Debug.LogError("Player is NULL");
+        }
+
         _scoreText.text = "Score: " + 0;
         _gameOver.gameObject.SetActive(false);
         _restartText.gameObject.SetActive(false);
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
-
+        _currentThrusterReserve = _maxThrusterReserve;
         if (_gameManager == null)
         {
             Debug.LogError("GameManager is NULL");
         }
+        
     }
     public void UpdateAmmo(int currentAmmo)
     {
@@ -44,7 +63,6 @@ public class UIManager : MonoBehaviour
 
         if (currentAmmo == 0)
         {
-
         }
     }
     
@@ -78,12 +96,42 @@ public class UIManager : MonoBehaviour
         }
         
     }
-    
+
     // Update is called once per frame
     void Update()
     {
-    
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) == true)
+        {
+            _timestamp = Time.deltaTime;
+        }
+
+        if (Input.GetKey(KeyCode.LeftShift) == true && ThrusterActive == true && _currentThrusterReserve > 0)
+        {
+            _player.ThrusterActive(true);
+            _currentThrusterReserve -= _ScaleRate * (_timestamp);
+            _thrusterReserve.rectTransform.localScale = new Vector3(_currentThrusterReserve, 0.35f, 1);
+        }
+
+
+        if (_currentThrusterReserve <= 0)
+        {
+            _player.ThrusterActive(false);
+            StartCoroutine(ThrusterCoolDown());
+        }
+
     }
+    IEnumerator ThrusterCoolDown()
+    {
+        _currentThrusterReserve = _maxThrusterReserve;
+        ThrusterActive = false;
+        yield return new WaitForSeconds(8.0f);
+        _thrusterReserve.rectTransform.localScale = new Vector3(_currentThrusterReserve, 0.35f, 1);
+        ThrusterActive = true;
+        
+    }
+
+
     public void UpdateScore(int playerScore)
     {
         _scoreText.text = "Score: " + playerScore;
