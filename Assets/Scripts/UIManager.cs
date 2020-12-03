@@ -22,7 +22,7 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Image _thrusterReserve;
     private float _depletionRate = 0.40f;
-    private float _ThrusterRecharge = 0.07f;
+    private float _ThrusterRecharge = 0.12f;
     private float _ThrusterAccelRecharge = 1f;
     private float _maxThrusterReserve = 1.75f;
     private float _currentThrusterReserve;

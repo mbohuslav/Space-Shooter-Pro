@@ -54,6 +54,9 @@ public class PowerUp : MonoBehaviour
                     case 4:
                         player.HealthActive();
                         break;
+                    case 5:
+                        player.HomingMissileActive();
+                        break;
                     default:
                         Debug.Log("Not a Valid Power Up");
                         break;

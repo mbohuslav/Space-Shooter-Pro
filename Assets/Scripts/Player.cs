@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
     private GameObject _laserPrefab;
     [SerializeField]
     private float _fireRate = 0.15f;
+    private float _missileFireRate = 0.3f;
     private float _canFire = -1f;
     [SerializeField]
     private int _ammoCount = 15;
@@ -32,8 +33,9 @@ public class Player : MonoBehaviour
 
     private UIManager _uiManager;
     private SpawnManager _spawnManager;
-    private Main_Camera _mainCamera; 
+    private Main_Camera _mainCamera;
 
+    public bool _homingMissileActive = false;
     private bool _tripleShotActive = false;
     private bool _speedBoostActive = false;
     private bool isThrusterActive = true;
@@ -57,10 +59,13 @@ public class Player : MonoBehaviour
     [SerializeField]
     private AudioClip _noAmmoSound;
     [SerializeField]
+    private AudioClip _MissileSound;
+    [SerializeField]
     private GameObject _explosionPrefab;
     public GameObject playerChildHolder;
+    [SerializeField]
+    private GameObject _homingMissilePrefab;
 
-    
 
 
     // bool resetPowerUp;
@@ -75,7 +80,6 @@ public class Player : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         _accelRatePerSec = _maxSpeed / _timeZerotoMax;
         _mainCamera = GameObject.Find("Main Camera").GetComponent<Main_Camera>();
-
         if (_spawnManager == null)
         {
             Debug.LogError("The Spawn Manager is NULL.");
@@ -121,14 +125,14 @@ public class Player : MonoBehaviour
     }
     public void ThrusterActive(bool active)
     {
-     isThrusterActive = active;
-    }    
-    
+        isThrusterActive = active;
+    }
+
     void CalculateMovement()
     {
         float horizontalInput = Input.GetAxisRaw("Horizontal");
         float verticalInput = Input.GetAxisRaw("Vertical");
-     
+
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
 
         if (GetComponent<Collider2D>() != null)
@@ -166,7 +170,7 @@ public class Player : MonoBehaviour
                 _thrusterVisualizer[1].SetActive(true);
                 _thrusterVisualizer[0].SetActive(false);
             }
-        }     
+        }
 
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -4.8f, 0), 0);
 
@@ -182,48 +186,64 @@ public class Player : MonoBehaviour
 
     void FireLaser()
     {
-        if (_ammoCount > 0)
+        if (_homingMissileActive == true)
         {
-            _ammoCount -= 1;
+            
+             _canFire = Time.time + _missileFireRate;
+                Instantiate(_homingMissilePrefab, transform.position + new Vector3(0, 0, 0), Quaternion.identity);
+                _audioSource.clip = _MissileSound;
+                _audioSource.volume = 0.10f;
+                _audioSource.Play();
+         }
 
-            _canFire = Time.time + _fireRate;
-
-            if (_tripleShotActive == true)
-            {
-                Instantiate(_tripleShotPrefab, transform.position + new Vector3(-1.34f, 0.82f, 0), Quaternion.identity);
-            }
-
-            else
-            {
-                Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
-            }
-            _audioSource.clip = _laserSound;
-            _audioSource.Play();
-            _uiManager.UpdateAmmo(_ammoCount);
-        }
         else
         {
-            _audioSource.clip = _noAmmoSound;
-            _audioSource.Play();
+             if (_ammoCount > 0) 
+             {
+                  _ammoCount -= 1;
+                  _canFire = Time.time + _fireRate;
+
+                  if (_tripleShotActive == true)
+                       {
+                           Instantiate(_tripleShotPrefab, transform.position + new Vector3(-1.34f, 0.82f, 0), Quaternion.identity);
+                       }
+
+                  else
+                  {
+                       Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
+                  }
+
+              _audioSource.clip = _laserSound;
+              _audioSource.volume = 0.25f;
+              _audioSource.Play();
+             _uiManager.UpdateAmmo(_ammoCount);
+             }
+
+             else
+             {
+                   _audioSource.clip = _noAmmoSound;
+                   _audioSource.volume = 0.15f;
+                   _audioSource.Play();
+             }
+
         }
-
-
     }
 
     public void Damage()
     {
         _audioSource.clip = _playerExplosion;
         _audioSource.Play();
+        _audioSource.volume = 0.15f;
         _mainCamera.shake();
 
-        if (_shieldsActive == true  && _ImmunityStart <= Time.time)
+        if (_shieldsActive == true && _ImmunityStart <= Time.time)
         {
             _shieldLevel -= 1;
             _ImmunityStart = Time.time + ImmunityDuration;
 
             switch (_shieldLevel)
             {
-             
+
                 case 0:
                     _shieldVisualizer[0].SetActive(false);
                     _shieldsActive = false;
@@ -235,7 +255,7 @@ public class Player : MonoBehaviour
                 case 2:
                     _shieldVisualizer[2].SetActive(false);
                     _shieldVisualizer[1].SetActive(true);
-                     break;
+                    break;
                 default:
                     Debug.Log("Not a valid Shield Strength");
                     break;
@@ -245,9 +265,9 @@ public class Player : MonoBehaviour
 
         if (_ImmunityStart <= Time.time && _lives > 0)
         {
-            
+
             _lives -= 1; //_lives --;   same function
-            
+
             int randomEngineVisualizer = Random.Range(0, 2);
             switch (randomEngineVisualizer)
             {
@@ -279,32 +299,45 @@ public class Player : MonoBehaviour
             _uiManager.Updatelives(_lives);
             _ImmunityStart = Time.time + ImmunityDuration;
         }
-       
-        if (_lives <1)
+
+        if (_lives < 1)
         {
             _spawnManager.OnPlayerDeath();
             _audioSource.clip = _playerExplosion;
+            _audioSource.volume = 0.25f;
             _audioSource.Play();
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
             _speed = 0;
             Destroy(GetComponent<SpriteRenderer>(), 0.25f);
             Destroy(GetComponent<Collider2D>());
             foreach (Transform child in playerChildHolder.transform)
-             Destroy(child.gameObject);
+                Destroy(child.gameObject);
             Destroy(this.gameObject, 3.018f);
         }
-        
+
     }
+    public void HomingMissileActive()
+    {
+        _homingMissileActive = true;
+        StartCoroutine(HomingMissilePowerDownRoutine());
+    }
+    IEnumerator HomingMissilePowerDownRoutine()
+    {
+        yield return new WaitForSeconds(10.0f);
+        _homingMissileActive = false;
+    }
+
+
 
     public void TripleShotActive()
     {
         _tripleShotActive = true;
         StartCoroutine(TripleShotPowerDownRoutine());
-    }    
-   
+    }
+
     IEnumerator TripleShotPowerDownRoutine()
     {
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(7.0f);
         _tripleShotActive = false;
     }
 
@@ -315,20 +348,13 @@ public class Player : MonoBehaviour
     }
     IEnumerator SpeedBoostPowerDownRoutine()
     {
-        if ((GameObject.Find("Thruster") == null) || (GameObject.Find("ThrusterOn") == null))
-        {
-            Debug.LogError("The Spawn Manager is NULL.");
-        }
-        else
-        {
             yield return new WaitForSeconds(5.0f);
             _speedBoostActive = false;
             _thrusterVisualizer[1].SetActive(false);
             _thrusterVisualizer[0].SetActive(true);
-        }
     }
 
-   public void ShieldsActive()
+    public void ShieldsActive()
     {
         _shieldsActive = true;
         _shieldVisualizer[0].SetActive(false);
@@ -336,27 +362,6 @@ public class Player : MonoBehaviour
         _shieldVisualizer[2].SetActive(true);
         _shieldLevel = 3;
 
-        /* switch (_shieldLevel)
-          {
-              case 0:
-                  _shieldsActive = true;
-                  _shieldVisualizer[0].SetActive(true);
-                  _shieldLevel = 1;
-                  break;
-              case 1:
-                  _shieldVisualizer[1].SetActive(true);
-                  _shieldVisualizer[0].SetActive(false);
-                  _shieldLevel = 2;
-                  break;
-              case 2:
-                  _shieldVisualizer[2].SetActive(true);
-                  _shieldVisualizer[1].SetActive(false);
-                  _shieldLevel = 3;
-                   break;
-             default:
-                  Debug.Log("Not a valid Shield Strength");
-                  break;
-          } */
     }
 
     public void AmmoActive()
@@ -391,19 +396,13 @@ public class Player : MonoBehaviour
                 _rightEngineVisualizer.SetActive(false);
             }
 
-         //   else if (_leftEngineVisualizer.activeSelf == false && _rightEngineVisualizer.activeSelf == false)
-        //    { }
 
-            else if (_leftEngineVisualizer == null && _rightEngineVisualizer == null)
-            {
-                Debug.Log("_Engine Visualizers are NUll");
-            }
-
-            
-            
+         //   else if (_leftEngineVisualizer == null && _rightEngineVisualizer == null)
+         //   {
+         //       Debug.Log("_Engine Visualizers are NUll");
+         //   }
 
         }
-
     }
 
 
@@ -411,10 +410,10 @@ public class Player : MonoBehaviour
     {
         _score += points;
         _uiManager.UpdateScore(_score);
-            
+
     }
 
-
+    
 
 
 

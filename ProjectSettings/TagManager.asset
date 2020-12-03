@@ -12,6 +12,7 @@ TagManager:
   - PowerUp
   - Asteroid
   - Enemy Laser
+  - Dead Enemy
   layers:
   - Default
   - TransparentFX
