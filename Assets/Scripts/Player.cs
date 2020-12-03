@@ -65,13 +65,15 @@ public class Player : MonoBehaviour
     public GameObject playerChildHolder;
     [SerializeField]
     private GameObject _homingMissilePrefab;
+    
+    //Color change variables
+    private bool _playerBlinking = false;
+    private float _timeLeft = 1f; //remove after testing
+    private Color _targetColor;
+    private Color _startingColor;
+    [SerializeField]
+    private SpriteRenderer _playerRenderer;
 
-
-
-    // bool resetPowerUp;
-
-
-    // Start is called before the first frame update
     void Start()
     {
         transform.position = new Vector3(0, -4.5f, 0);
@@ -97,16 +99,16 @@ public class Player : MonoBehaviour
             Debug.LogError(" the Main Camera is NULL");
         }
 
-
-
         else
         {
             _audioSource.clip = _laserSound;
         }
-
+      
+        //Color blinking routine setup
+        _startingColor = Color.white;
+        _targetColor = Color.red;
     }
 
-    // Update is called once per frame
     void Update()
     {
         CalculateMovement();
@@ -122,6 +124,12 @@ public class Player : MonoBehaviour
             _canRegen = Time.time + _ammoRegen;
             _uiManager.UpdateAmmo(_ammoCount);
         }
+
+       /* if (_playerBlinking == true)
+        {
+            ColorChange();
+        }
+       */
     }
     public void ThrusterActive(bool active)
     {
@@ -186,19 +194,19 @@ public class Player : MonoBehaviour
 
     void FireLaser()
     {
-        if (_homingMissileActive == true)
+        if (_homingMissileActive == true && _playerBlinking == false)
         {
             
              _canFire = Time.time + _missileFireRate;
                 Instantiate(_homingMissilePrefab, transform.position + new Vector3(0, 0, 0), Quaternion.identity);
                 _audioSource.clip = _MissileSound;
-                _audioSource.volume = 0.10f;
+                _audioSource.volume = 0.07f;
                 _audioSource.Play();
          }
 
         else
         {
-             if (_ammoCount > 0) 
+             if (_ammoCount > 0 && _playerBlinking == false) 
              {
                   _ammoCount -= 1;
                   _canFire = Time.time + _fireRate;
@@ -219,10 +227,10 @@ public class Player : MonoBehaviour
              _uiManager.UpdateAmmo(_ammoCount);
              }
 
-             else
+             if (_ammoCount <=0 || _playerBlinking == true)
              {
                    _audioSource.clip = _noAmmoSound;
-                   _audioSource.volume = 0.15f;
+                   _audioSource.volume = 0.07f;
                    _audioSource.Play();
              }
 
@@ -311,7 +319,7 @@ public class Player : MonoBehaviour
             Destroy(GetComponent<SpriteRenderer>(), 0.25f);
             Destroy(GetComponent<Collider2D>());
             foreach (Transform child in playerChildHolder.transform)
-                Destroy(child.gameObject);
+                Destroy(child.gameObject.GetComponent<SpriteRenderer>());
             Destroy(this.gameObject, 3.018f);
         }
 
@@ -395,16 +403,75 @@ public class Player : MonoBehaviour
             {
                 _rightEngineVisualizer.SetActive(false);
             }
-
-
-         //   else if (_leftEngineVisualizer == null && _rightEngineVisualizer == null)
-         //   {
-         //       Debug.Log("_Engine Visualizers are NUll");
-         //   }
-
         }
     }
+    public void MonkeyActive()
+    {
+        _speed = 2f;
+        _fireRate = 100f;
+        isThrusterActive = false;
+        _uiManager.MonkeyKillThruster();
+        _playerBlinking = true;
+        StartCoroutine(MonkeyPowerDownRoutine());
+        StartCoroutine(ColorChange());
+    } 
 
+    IEnumerator MonkeyPowerDownRoutine()
+    {
+        yield return new WaitForSeconds(5.0f);
+        _speed = 4f;
+        _fireRate = 0.15f;
+        _playerBlinking = false;
+        
+        //reset Player Color to normal
+    }
+
+    IEnumerator ColorChange()
+    {
+        if (_playerRenderer == null)
+        {
+            _playerRenderer.color = Color.white;
+        }
+
+        while (_playerBlinking == true)
+        {
+            _playerRenderer.color = _targetColor;
+            yield return new WaitForSeconds(0.25f);
+            _playerRenderer.color = _startingColor;
+            yield return new WaitForSeconds(0.25f);
+        }
+
+
+
+
+
+
+
+
+      /*  var _playerRenderer = GetComponent<SpriteRenderer>();
+
+        if (_timeLeft <= Time.deltaTime && _timeLeft >0)
+             {
+
+                 _playerRenderer.color = _targetColor;
+                 _targetColor = new Color(255, Random.Range(0,255) , Random.Range(0, 255));
+                 _timeLeft = 1f;
+             }
+             if (_timeLeft <= 0)
+             {
+                 _playerRenderer.color = Color.red;
+                 _playerBlinking = false;
+             }
+
+             else
+             {
+                 _playerRenderer.color = Color.Lerp(_startingColor, _targetColor, t);
+                 _timeLeft -= Time.deltaTime;
+
+             }
+         */  
+
+    }
 
     public void AddScore(int points)
     {
@@ -413,7 +480,7 @@ public class Player : MonoBehaviour
 
     }
 
-    
+
 
 
 
@@ -425,46 +492,81 @@ public class Player : MonoBehaviour
           _shieldVisualizer.SetActive(false);
        } */
 
-    /*IEnumerator OnTriggerEnter2D(Collider2D other)
+/*IEnumerator OnTriggerEnter2D(Collider2D other)
+{
+    //If the colliding object's tag is "PowerUp"
+    //if (other.tag == "Shields")
     {
-        //If the colliding object's tag is "PowerUp"
-        //if (other.tag == "Shields")
+        //If Power_Up is false, it means the powerup routine is not currently running
+        if (!_shieldsActive)
         {
-            //If Power_Up is false, it means the powerup routine is not currently running
-            if (!_shieldsActive)
+            _shieldsActive = true;
+            _shieldVisualizer.SetActive(true);
+            float duration = 20f;
+
+            //Takes a timeStamp
+            float timeStamp = Time.time;
+
+            //While the current time is less than the timeStamp + the duration of the power up
+            while (Time.time < timeStamp + duration)
             {
-                _shieldsActive = true;
-                _shieldVisualizer.SetActive(true);
-                float duration = 20f;
-
-                //Takes a timeStamp
-                float timeStamp = Time.time;
-
-                //While the current time is less than the timeStamp + the duration of the power up
-                while (Time.time < timeStamp + duration)
+                //If the flag to reset the powerup is active
+                if (resetPowerUp)
                 {
-                    //If the flag to reset the powerup is active
-                    if (resetPowerUp)
-                    {
-                        //Toggle it off
-                        resetPowerUp = false;
-                        //reset the powerup so that it ends in (current time + 5 seconds);
-                        timeStamp = Time.time;
-                    }
-                    //Wait for next frame. Do that until the duration is over.
-                    yield return null;
+                    //Toggle it off
+                    resetPowerUp = false;
+                    //reset the powerup so that it ends in (current time + 5 seconds);
+                    timeStamp = Time.time;
                 }
-                //The current time is now greater or equal to the timeStamp + the duration
-                //This means the power up should be over
-                _shieldsActive = false;
-                _shieldVisualizer.SetActive(false);
+                //Wait for next frame. Do that until the duration is over.
+                yield return null;
             }
-            //Otherwise, it means that a different powerup routine is already running
-            //We're just going to let that other routine know that it should reset the timer
-            else
-            {
-                resetPowerUp = true;
-            }
-        } 
-    } */
+            //The current time is now greater or equal to the timeStamp + the duration
+            //This means the power up should be over
+            _shieldsActive = false;
+            _shieldVisualizer.SetActive(false);
+        }
+        //Otherwise, it means that a different powerup routine is already running
+        //We're just going to let that other routine know that it should reset the timer
+        else
+        {
+            resetPowerUp = true;
+        }
+    } 
+} */
+
+
+
+/*
+
+public void ColorChange()  Alternate cool visuals!!!!
+{
+    var t = Time.deltaTime / _timeLeft;
+    var _playerRenderer = GetComponent<SpriteRenderer>();
+
+    if (_timeLeft <= Time.deltaTime && _timeLeft >0)
+    {
+
+       _playerRenderer.material.SetColor("_Color", _targetColor);
+        _targetColor = new Color(255, Random.Range(0,255) , Random.Range(0, 255));
+        _timeLeft = .2f;
+    }
+    if (_timeLeft <= 0)
+    {
+        _playerRenderer.material.color = Color.red;
+        _playerBlinking = false;
+    }
+
+    else
+    {
+        _playerRenderer.material.color = Color.Lerp(_startingColor, _targetColor, t);
+        _timeLeft -= Time.deltaTime;
+
+    }
+
+
+}
+*/
+
+
 }

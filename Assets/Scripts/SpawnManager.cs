@@ -57,7 +57,7 @@ public class SpawnManager : MonoBehaviour
             {
              _enemySpawnDetection = true;
             }
-        yield return new WaitForSeconds(Random.Range(2.0f, 6.0f));
+        yield return new WaitForSeconds(Random.Range(1.0f, 5.0f));
         }
     }
     IEnumerator SpawnPowerUpRoutine()
@@ -69,7 +69,7 @@ public class SpawnManager : MonoBehaviour
             Vector3 posToSpawn = new Vector3(Random.Range(-8f, 8f), 7f, 0);
             int randomPowerUp = Random.Range(0, 5);
             Instantiate(powerups[randomPowerUp], posToSpawn, Quaternion.identity);
-            yield return new WaitForSeconds(Random.Range(5.0f, 10.0f));
+            yield return new WaitForSeconds(Random.Range(4.0f, 9.0f));
         }
     }
     IEnumerator SpawnRarePowerUpRoutine()
@@ -79,7 +79,7 @@ public class SpawnManager : MonoBehaviour
         while (_stopSpawning == false)
         {
             Vector3 posToSpawn = new Vector3(Random.Range(-8f, 8f), 7f, 0);
-            int randomRarePowerUp = Random.Range(0, 1);
+            int randomRarePowerUp = Random.Range(0, 2);
             Instantiate(rarepowerups[randomRarePowerUp], posToSpawn, Quaternion.identity);
             yield return new WaitForSeconds(Random.Range(15.0f, 25.0f));
         }

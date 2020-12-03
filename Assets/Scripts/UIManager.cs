@@ -120,7 +120,12 @@ public class UIManager : MonoBehaviour
         }
     }
   
-    IEnumerator ThrusterCoolDown()
+    public void MonkeyKillThruster()
+    {
+        StartCoroutine(ThrusterCoolDown());
+    }
+
+   IEnumerator ThrusterCoolDown()
     {
         ThrusterActive = false;
         yield return new WaitForSeconds(5.0f);

@@ -11,11 +11,14 @@ public class PowerUp : MonoBehaviour
     private int _powerUpID; 
     [SerializeField]
     private AudioClip _clip;
+    
+  
+    
 
     // Start is called before the first frame update
     void Start()
     {
-      
+       
     }
 
     // Update is called once per frame
@@ -34,7 +37,7 @@ public class PowerUp : MonoBehaviour
         if (other.tag == "Player")
         {
             Player player = other.transform.GetComponent<Player>();
-            AudioSource.PlayClipAtPoint(_clip, transform.position, 1f);
+           AudioSource.PlayClipAtPoint(_clip, transform.position, 1f);
             if (player != null)
             {
                 switch (_powerUpID)
@@ -56,6 +59,9 @@ public class PowerUp : MonoBehaviour
                         break;
                     case 5:
                         player.HomingMissileActive();
+                        break;
+                    case 6:
+                        player.MonkeyActive();
                         break;
                     default:
                         Debug.Log("Not a Valid Power Up");

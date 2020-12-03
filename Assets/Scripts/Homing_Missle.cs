@@ -5,10 +5,10 @@ using UnityEngine;
 public class Homing_Missle : MonoBehaviour
 {
     [SerializeField]
-    private float _speed = 12f;
+    private float _speed = 7f;
     public Transform target;
     public Rigidbody2D rigidBody;
-    public float angleChangingSpeed = 45.0f;
+    public float angleChangingSpeed = 210.0f;
     public SpawnManager _spawnManager;
     GameObject _enemyTarget;
     private bool _doNotRunSpawnCheckAnymore = true;
