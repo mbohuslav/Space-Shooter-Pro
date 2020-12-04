@@ -68,7 +68,6 @@ public class Player : MonoBehaviour
     
     //Color change variables
     private bool _playerBlinking = false;
-    private float _timeLeft = 1f; //remove after testing
     private Color _targetColor;
     private Color _startingColor;
     [SerializeField]
@@ -539,7 +538,7 @@ public class Player : MonoBehaviour
 
 /*
 
-public void ColorChange()  Alternate cool visuals!!!!
+public void ColorChange()  Alternate cool visuals!!!! to be used with super heating with Beam Weapon later!
 {
     var t = Time.deltaTime / _timeLeft;
     var _playerRenderer = GetComponent<SpriteRenderer>();

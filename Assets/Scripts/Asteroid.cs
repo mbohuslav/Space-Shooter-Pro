@@ -36,7 +36,7 @@ public class Asteroid : MonoBehaviour
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
             _spawnManager.StartSpawning();
             Destroy(GetComponent<SpriteRenderer>(), 0.25f);
-            Destroy(GetComponent<Collider2D>(), 0.25f);
+            Destroy(GetComponent<Collider2D>());
             Destroy(this.gameObject, 3.018f);
         }
 
@@ -46,7 +46,7 @@ public class Asteroid : MonoBehaviour
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
             _spawnManager.StartSpawning();
             Destroy(GetComponent<SpriteRenderer>(), 0.25f);
-            Destroy(GetComponent<Collider2D>(), 0.25f);
+            Destroy(GetComponent<Collider2D>());
             Destroy(this.gameObject, 3.018f);
         }
     

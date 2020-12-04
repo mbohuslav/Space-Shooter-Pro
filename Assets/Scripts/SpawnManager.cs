@@ -6,7 +6,7 @@ public class SpawnManager : MonoBehaviour
 {
 
     [SerializeField]
-    private GameObject _enemyPrefab;
+    private GameObject[] _enemyPrefab;
     [SerializeField]
     private GameObject _enemyContainer;
     [SerializeField]
@@ -51,7 +51,8 @@ public class SpawnManager : MonoBehaviour
         while (_stopSpawning == false)
         {
             Vector3 posToSpawn = new Vector3(Random.Range(-8f, 8f), 7f, 0);
-            GameObject newEnemy = Instantiate(_enemyPrefab, posToSpawn, Quaternion.identity);
+            int randomEnemyMove =Random.Range(0, 4);
+            GameObject newEnemy = Instantiate(_enemyPrefab[randomEnemyMove], posToSpawn, Quaternion.identity);
             newEnemy.transform.parent = _enemyContainer.transform;
            if(_enemySpawnDetection == false && (_player._homingMissileActive == true))
             {

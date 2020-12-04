@@ -5,23 +5,37 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField]
-    private float _speed = 4.0f; 
+    private float _speed = 4.0f;
     private Player _player;
     private Animator _anim;
     [SerializeField]
     private AudioSource _audioSource;
     [SerializeField]
     private GameObject _enemyLaserPrefab;
+    [SerializeField]
+    private int _enemyID;
+
+
+    //zigzag movement for enemy
+    Vector3 pos;
+    Vector3 axis;
+    float frequency = 2.4f; // Speed of sine movement
+    float magnitude = 3f; //  Size of sine movement
+
 
     // Start is called before the first frame update
     void Start()
     {
+        pos = transform.position;
+        axis = transform.right;
+
+
         _player = GameObject.Find("Player").GetComponent<Player>();
         if (_player == null)
         {
             Debug.LogError("Player is NULL");
         }
-        
+
         transform.position = new Vector3(Random.Range(-8f, 8f), 7f, 0);
         _anim = GetComponent<Animator>();
 
@@ -37,16 +51,41 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //move down at 4 meters per second
-        transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        float velocity = _speed * Time.deltaTime;
+       
 
-        //if bottom of screen respawn at top
-        //respawn at top with a new random x position
+        switch (_enemyID)
+        {
+            
+            case 0:
+                transform.Translate(Vector3.down * velocity);
+                break;
+            case 1:
+                transform.Translate(-velocity*0.75f, -velocity*0.75f, 0);
+                break;
+            case 2:
+                transform.Translate(velocity*0.75f, -velocity*0.75f, 0);
+                break;
+           case 3:
+                pos += Vector3.down * velocity;
+                transform.position = pos + axis * Mathf.Cos(Time.time * frequency) * magnitude;
+                break;
+           /* case 4:
+                _timeCount -= Time.deltaTime;
+                transform.Translate(x * velocity, y * velocity, z);
+                break; */
+                 
+            default:
+                Debug.Log("Not a valid Shield Strength");
+                break;
+        }
+          
 
-        if (transform.position.y < -5.5f)
+        if (transform.position.y < -5.5f || transform.position.x <-14f || transform.position.x > 14f)
         {
             float randomX = Random.Range(-8f, 8f);
             transform.position = new Vector3(randomX, 7f, 0);
+            pos = transform.position;
         }
         
 
