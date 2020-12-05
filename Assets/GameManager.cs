@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    private bool _isGameOver= false;
+    private bool _isGameOver = false;
 
     private void Update()
     {

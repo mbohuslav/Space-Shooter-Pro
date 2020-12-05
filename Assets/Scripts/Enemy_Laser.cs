@@ -13,11 +13,11 @@ public class Enemy_Laser : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _player = GameObject.Find("Player").GetComponent<Player>();
-        if (_player == null)
-        {
-            Debug.LogError("Player is NULL");
-        }
+       // _player = GameObject.Find("Player").GetComponent<Player>();
+      //  if (_player == null)
+      //  {
+       //     Debug.LogError("Player is NULL");
+      //  }
     }
 
     // Update is called once per frame
@@ -39,7 +39,7 @@ public class Enemy_Laser : MonoBehaviour
         if (other.tag == "Player")
         {
             Player player = other.transform.GetComponent<Player>();
-
+          
             if (player != null)
             {
                 player.Damage();

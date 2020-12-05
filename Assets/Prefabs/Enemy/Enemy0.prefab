@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2026494116389404346}
   - component: {fileID: -4831678048987357006}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: Enemy0
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52,6 +52,7 @@ MonoBehaviour:
   _audioSource: {fileID: -4831678048987357006}
   _enemyLaserPrefab: {fileID: 35256463633915650, guid: f8fb0061fee4fff48ac4d34621b188e2,
     type: 3}
+  _enemyID: 0
 --- !u!212 &990597242822627863
 SpriteRenderer:
   m_ObjectHideFlags: 0

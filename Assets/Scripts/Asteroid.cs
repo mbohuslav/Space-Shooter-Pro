@@ -9,11 +9,13 @@ public class Asteroid : MonoBehaviour
     [SerializeField]
     private GameObject _explosionPrefab;
     private SpawnManager _spawnManager;
-  
+    private UIManager _uiManager;
+
     // Start is called before the first frame update
     void Start()
     {
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
     }
 
     // Update is called once per frame
@@ -34,6 +36,7 @@ public class Asteroid : MonoBehaviour
                 player.Damage();
             }
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
+            _uiManager.InitiateEnemyWave();
             _spawnManager.StartSpawning();
             Destroy(GetComponent<SpriteRenderer>(), 0.25f);
             Destroy(GetComponent<Collider2D>());
@@ -44,6 +47,7 @@ public class Asteroid : MonoBehaviour
         {
             Destroy(other.gameObject);
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
+            _uiManager.InitiateEnemyWave();
             _spawnManager.StartSpawning();
             Destroy(GetComponent<SpriteRenderer>(), 0.25f);
             Destroy(GetComponent<Collider2D>());

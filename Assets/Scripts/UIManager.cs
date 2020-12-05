@@ -20,6 +20,9 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Image _AmmoImg;
     [SerializeField]
+    private Text _newEnemyWave;
+
+    [SerializeField]
     private Image _thrusterReserve;
     private float _depletionRate = 0.40f;
     private float _ThrusterRecharge = 0.12f;
@@ -33,13 +36,23 @@ public class UIManager : MonoBehaviour
 
     public float _timestamp;
     private Player _player;
-
     private GameManager _gameManager;
+    private SpawnManager _spawnManager;
+    public int EnemyWave;
+
+
 
     // Start is called before the first frame update
     void Start()
     {
         _player = GameObject.Find("Player").GetComponent<Player>();
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>(); 
+       
+        if (_spawnManager == null)
+        {
+            Debug.LogError("Player is NULL");
+        }
+
         if (_player == null)
         {
             Debug.LogError("Player is NULL");
@@ -48,6 +61,7 @@ public class UIManager : MonoBehaviour
         _scoreText.text = "Score: " + 0;
         _gameOver.gameObject.SetActive(false);
         _restartText.gameObject.SetActive(false);
+        _newEnemyWave.gameObject.SetActive(false);
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
         _currentThrusterReserve = _maxThrusterReserve;
         if (_gameManager == null)
@@ -118,6 +132,7 @@ public class UIManager : MonoBehaviour
             _player.ThrusterActive(false);
             StartCoroutine(ThrusterCoolDown());
         }
+       
     }
   
     public void MonkeyKillThruster()
@@ -143,6 +158,80 @@ public class UIManager : MonoBehaviour
     public void UpdateScore(int playerScore)
     {
         _scoreText.text = "Score: " + playerScore;
-            
+
+        if (playerScore == 50)
+        {   
+            EnemyWave = 1;
+            StartCoroutine(NewEnemyWave());
+        }
+                
+       if (playerScore == 100)
+       { 
+            EnemyWave = 2;
+            StartCoroutine(NewEnemyWave());
+       }
+      
+        if (playerScore == 200)
+        {   
+            EnemyWave = 3;
+            StartCoroutine(NewEnemyWave());
+        }
+       
+        if (playerScore == 400)
+        {   
+            EnemyWave = 4;
+            StartCoroutine(NewEnemyWave());
+        }
+       
+        if (playerScore == 600)
+        {   
+            EnemyWave = 5;
+            StartCoroutine(NewEnemyWave());
+        }
+
+        if (playerScore == 800)
+        {
+            EnemyWave = 6;
+            StartCoroutine(NewEnemyWave());
+        }
+        
+        if (playerScore == 1000)
+        {
+            EnemyWave = 7;
+            StartCoroutine(NewEnemyWave());
+        }
+
+
+        //trigger wave system when scores reach a certain level
+        //use some sort of Array or list
+        //trigger wave # text
+        //send wave information to SpawnManager
+
+
     }
+    public void InitiateEnemyWave()
+    {
+            StartCoroutine(NewEnemyWave());
+    }
+
+    IEnumerator NewEnemyWave()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _newEnemyWave.gameObject.SetActive(true);
+        yield return new WaitForSeconds(0.2f);
+        _newEnemyWave.gameObject.SetActive(false);
+        yield return new WaitForSeconds(0.2f);
+        _newEnemyWave.gameObject.SetActive(true);
+        yield return new WaitForSeconds(0.2f);
+        _newEnemyWave.gameObject.SetActive(false);
+        yield return new WaitForSeconds(0.2f);
+        _newEnemyWave.gameObject.SetActive(true);
+        yield return new WaitForSeconds(0.2f);
+        _newEnemyWave.gameObject.SetActive(false);
+        yield return new WaitForSeconds(0.2f);
+      
+    }
+
+
+
 }

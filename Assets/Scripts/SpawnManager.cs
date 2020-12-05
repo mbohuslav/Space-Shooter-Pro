@@ -6,7 +6,8 @@ public class SpawnManager : MonoBehaviour
 {
 
     [SerializeField]
-    private GameObject[] _enemyPrefab;
+    private GameObject _enemyPrefab;
+    private GameObject[] _wave;
     [SerializeField]
     private GameObject _enemyContainer;
     [SerializeField]
@@ -19,17 +20,24 @@ public class SpawnManager : MonoBehaviour
    
     public bool _enemySpawnDetection = false;
     private  Player _player;
-
+    public UIManager _uiManager;
+    private int _enemyWave;
+    
 
     // Start is called before the first frame update
     void Start()
     {
         _player = GameObject.Find("Player").GetComponent<Player>();
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        _wave = new GameObject[5];
         if (_player == null)
         {
             Debug.LogError("Player is NULL");
         }
-        
+        if (_uiManager == null)
+        {
+            Debug.LogError("Player is NULL");
+        }
     }
 
     public void StartSpawning()
@@ -42,23 +50,112 @@ public class SpawnManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-    
+        _enemyWave = _uiManager.EnemyWave;
     }
    
     IEnumerator SpawnRoutine()
     {
-        yield return new WaitForSeconds(2.0f);
+        
         while (_stopSpawning == false)
         {
+            yield return new WaitForSeconds(Random.Range(2.0f, 6.0f));
             Vector3 posToSpawn = new Vector3(Random.Range(-8f, 8f), 7f, 0);
-            int randomEnemyMove =Random.Range(0, 4);
-            GameObject newEnemy = Instantiate(_enemyPrefab[randomEnemyMove], posToSpawn, Quaternion.identity);
-            newEnemy.transform.parent = _enemyContainer.transform;
-           if(_enemySpawnDetection == false && (_player._homingMissileActive == true))
+
+            switch (_enemyWave)
+                {     
+                case 0:
+                    Debug.Log("0 wave playing");
+                    yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
+                    for (int i = 0; i < 1; i++)
+                    {
+                        GameObject newEnemy = Instantiate(_enemyPrefab, posToSpawn, Quaternion.identity);
+                        _wave[i] = newEnemy;
+                        newEnemy.transform.parent = _enemyContainer.transform;
+                    }
+                    break;
+                case 1:
+                    yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
+                    for (int i = 0; i <= 1; i++)
+                    {                     
+                        GameObject newEnemy = Instantiate(_enemyPrefab, posToSpawn, Quaternion.identity);
+                        _wave[i] = newEnemy;
+                        _wave[i].transform.parent = _enemyContainer.transform;
+                        Debug.Log("1st wave playing");
+                    }
+                     break;
+                case 2:
+                    yield return new WaitForSeconds(Random.Range(1.0f, 3.5f));
+                    for (int i = 0; i <= 1; i++)
+                    {
+                        GameObject newEnemy = Instantiate(_enemyPrefab, posToSpawn, Quaternion.identity);
+                        _wave[i] = newEnemy;
+                        _wave[i].transform.parent = _enemyContainer.transform;
+                        Debug.Log("2rd wave playing");
+                    }
+                    break;
+                case 3:
+                    Debug.Log("3rd wave playing");
+                    yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
+                    for (int i = 0; i <= 2; i++)
+                    {
+                        GameObject newEnemy = Instantiate(_enemyPrefab, posToSpawn, Quaternion.identity);
+                        _wave[i] = newEnemy;
+                        _wave[i].transform.parent = _enemyContainer.transform;
+                    }
+                    break;
+                case 4:
+                    Debug.Log("4th wave playing");
+                    yield return new WaitForSeconds(Random.Range(1.0f, 3.5f));
+                    for (int i = 0; i <= 2; i++)
+                    {
+                        GameObject newEnemy = Instantiate(_enemyPrefab, posToSpawn, Quaternion.identity);
+                        _wave[i] = newEnemy;
+                        _wave[i].transform.parent = _enemyContainer.transform;
+                    }
+                    break;
+                case 5:
+                    Debug.Log("5th wave playing");
+                    yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
+                    for (int i = 0; i <= 3; i++)
+                    {
+                        GameObject newEnemy = Instantiate(_enemyPrefab, posToSpawn, Quaternion.identity);
+                        _wave[i] = newEnemy;
+                        _wave[i].transform.parent = _enemyContainer.transform;
+                    }
+                    break;
+                case 6:
+                    Debug.Log("6th wave playing");
+                    yield return new WaitForSeconds(Random.Range(1.0f, 3.5f));
+                    for (int i = 0; i <= 3; i++)
+                    {
+                        GameObject newEnemy = Instantiate(_enemyPrefab, posToSpawn, Quaternion.identity);
+                        _wave[i] = newEnemy;
+                        _wave[i].transform.parent = _enemyContainer.transform;
+                    }
+                    break;
+                case 7:
+                    Debug.Log("7th wave playing");
+                    yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
+                    for (int i = 0; i <= 4; i++)
+                    {
+                        GameObject newEnemy = Instantiate(_enemyPrefab, posToSpawn, Quaternion.identity);
+                        _wave[i] = newEnemy;
+                        _wave[i].transform.parent = _enemyContainer.transform;
+                    }
+                    break;
+
+
+                default:
+                    Debug.Log("Not a valid Wave");
+                    break;
+                }
+
+
+            if(_enemySpawnDetection == false && (_player._homingMissileActive == true))
             {
              _enemySpawnDetection = true;
             }
-        yield return new WaitForSeconds(Random.Range(1.0f, 5.0f));
+        
         }
     }
     IEnumerator SpawnPowerUpRoutine()

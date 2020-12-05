@@ -81,6 +81,8 @@ public class Player : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         _accelRatePerSec = _maxSpeed / _timeZerotoMax;
         _mainCamera = GameObject.Find("Main Camera").GetComponent<Main_Camera>();
+        _playerRenderer = GetComponent<SpriteRenderer>();
+
         if (_spawnManager == null)
         {
             Debug.LogError("The Spawn Manager is NULL.");
@@ -96,6 +98,10 @@ public class Player : MonoBehaviour
         if (_mainCamera == null)
         {
             Debug.LogError(" the Main Camera is NULL");
+        }
+        if (_playerRenderer == null)
+        {
+            Debug.LogError(" Sprite REnderer is NULL");
         }
 
         else
@@ -315,13 +321,18 @@ public class Player : MonoBehaviour
             _audioSource.Play();
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
             _speed = 0;
-            Destroy(GetComponent<SpriteRenderer>(), 0.25f);
+            // Destroy(GetComponent<SpriteRenderer>(), 0.25f);
+            StartCoroutine(DestroyPlayerSpriteRoutine());
             Destroy(GetComponent<Collider2D>());
             foreach (Transform child in playerChildHolder.transform)
                 Destroy(child.gameObject.GetComponent<SpriteRenderer>());
             Destroy(this.gameObject, 3.018f);
         }
-
+        IEnumerator DestroyPlayerSpriteRoutine()
+        {
+            yield return new WaitForSeconds(0.25f);
+            _playerRenderer.enabled = false;
+        }
     }
     public void HomingMissileActive()
     {
@@ -406,13 +417,18 @@ public class Player : MonoBehaviour
     }
     public void MonkeyActive()
     {
-        _speed = 2f;
-        _fireRate = 100f;
-        isThrusterActive = false;
-        _uiManager.MonkeyKillThruster();
-        _playerBlinking = true;
-        StartCoroutine(MonkeyPowerDownRoutine());
-        StartCoroutine(ColorChange());
+       if (_playerRenderer.enabled == true)
+        
+        {
+            _speed = 2f;
+            _fireRate = 100f;
+            isThrusterActive = false;
+            _uiManager.MonkeyKillThruster();
+            _playerBlinking = true;
+
+            StartCoroutine(MonkeyPowerDownRoutine());
+            StartCoroutine(ColorChange());
+        }
     } 
 
     IEnumerator MonkeyPowerDownRoutine()
@@ -422,14 +438,13 @@ public class Player : MonoBehaviour
         _fireRate = 0.15f;
         _playerBlinking = false;
         
-        //reset Player Color to normal
+       
     }
 
     IEnumerator ColorChange()
     {
         if (_playerRenderer == null)
-        {
-            _playerRenderer.color = Color.white;
+        {   
         }
 
         while (_playerBlinking == true)
