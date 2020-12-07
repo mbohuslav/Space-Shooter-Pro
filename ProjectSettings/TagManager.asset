@@ -13,6 +13,7 @@ TagManager:
   - Asteroid
   - Enemy Laser
   - Dead Enemy
+  - Enemy Shields
   layers:
   - Default
   - TransparentFX

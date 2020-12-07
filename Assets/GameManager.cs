@@ -21,8 +21,6 @@ public class GameManager : MonoBehaviour
 
     }
 
-    //if the escape key is pressed
-    //quit application
 
 
     public void GameOver()

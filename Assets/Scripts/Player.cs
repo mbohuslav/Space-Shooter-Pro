@@ -5,13 +5,13 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField]
-    private float _speed = 4f;
+    private float _speed = 6f;
     private float _maxSpeed = 12f;
     private float _timeZerotoMax = 4f;
     private float _accelRatePerSec;
     private float _velocity;
     [SerializeField]
-    private float _speedMultiplier = 4f;
+    private float _speedMultiplier = 3f;
 
     [SerializeField]
     private GameObject _laserPrefab;
@@ -21,7 +21,7 @@ public class Player : MonoBehaviour
     private float _canFire = -1f;
     [SerializeField]
     private int _ammoCount = 15;
-    private float _ammoRegen = 2;
+    private float _ammoRegen = 1.75f;
     private float _canRegen = -1;
     private float _ImmunityStart = 0f;
     public float ImmunityDuration = 0.75f;
@@ -130,11 +130,7 @@ public class Player : MonoBehaviour
             _uiManager.UpdateAmmo(_ammoCount);
         }
 
-       /* if (_playerBlinking == true)
-        {
-            ColorChange();
-        }
-       */
+      
     }
     public void ThrusterActive(bool active)
     {
@@ -150,34 +146,39 @@ public class Player : MonoBehaviour
 
         if (GetComponent<Collider2D>() != null)
         {
-            if (_speedBoostActive == false)
+            if (_playerBlinking == true)
             {
-                if (Input.GetKey(KeyCode.LeftShift) == true && isThrusterActive == true)
-                {
-                    _velocity += _accelRatePerSec * Time.deltaTime;
-                    _velocity = Mathf.Min(_velocity, _maxSpeed);
-                    transform.Translate(direction * (_speed + _velocity) * Time.deltaTime);
-
-                    _thrusterVisualizer[1].SetActive(true);
-                    _thrusterVisualizer[0].SetActive(false);
-                }
-
-                if (Input.GetKeyUp(KeyCode.LeftShift) == true || isThrusterActive == false)
-                {
-                    _velocity = 0;
-                    transform.Translate(direction * (_speed + _velocity) * Time.deltaTime);
-                    _thrusterVisualizer[0].SetActive(true);
-                    _thrusterVisualizer[1].SetActive(false);
-                }
-
-                else
-                {
-                    transform.Translate(direction * _speed * Time.deltaTime);
-                }
-
+                transform.Translate(direction * 2.0f * Time.deltaTime);
             }
-
             else
+            {
+                if (_speedBoostActive == false)
+                {
+                    if (Input.GetKey(KeyCode.LeftShift) == true && isThrusterActive == true)
+                    {
+                        _velocity += _accelRatePerSec * Time.deltaTime;
+                        _velocity = Mathf.Min(_velocity, _maxSpeed);
+                        transform.Translate(direction * (_speed + _velocity) * Time.deltaTime);
+
+                        _thrusterVisualizer[1].SetActive(true);
+                        _thrusterVisualizer[0].SetActive(false);
+                    }
+
+                    if (Input.GetKey(KeyCode.LeftShift) == false || isThrusterActive == false)
+                    {
+                        // _velocity = 0;
+                        transform.Translate(direction * _speed * Time.deltaTime);     //+ _velocity removed after speed
+                        _thrusterVisualizer[0].SetActive(true);
+                        _thrusterVisualizer[1].SetActive(false);
+                    }
+
+                    else
+                    {
+                        transform.Translate(direction * _speed * Time.deltaTime);
+                    }
+                }
+            }
+            if (_speedBoostActive == true)
             {
                 transform.Translate(direction * (_speedMultiplier * _speed) * Time.deltaTime);
                 _thrusterVisualizer[1].SetActive(true);
@@ -185,15 +186,15 @@ public class Player : MonoBehaviour
             }
         }
 
-        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -4.8f, 0), 0);
+        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -5.5f, 5.10f), 0);
 
-        if (transform.position.x <= -11.3f)
+        if (transform.position.x <= -13.4f)
         {
-            transform.position = new Vector3(11.3f, transform.position.y, 0);
+            transform.position = new Vector3(13.4f, transform.position.y, 0);
         }
-        else if (transform.position.x >= 11.3f)
+        else if (transform.position.x >= 13.4f)
         {
-            transform.position = new Vector3(-11.3f, transform.position.y, 0);
+            transform.position = new Vector3(-13.4f, transform.position.y, 0);
         }
     }
 
@@ -350,6 +351,10 @@ public class Player : MonoBehaviour
     public void TripleShotActive()
     {
         _tripleShotActive = true;
+        _ammoCount += 5;
+        _ammoCount = Mathf.Min(15, _ammoCount);
+        _uiManager.UpdateAmmo(_ammoCount);
+
         StartCoroutine(TripleShotPowerDownRoutine());
     }
 
@@ -361,8 +366,12 @@ public class Player : MonoBehaviour
 
     public void SpeedBoostActive()
     {
-        _speedBoostActive = true;
-        StartCoroutine(SpeedBoostPowerDownRoutine());
+        if (_playerBlinking == false)
+        {
+            _speedBoostActive = true;
+            StartCoroutine(SpeedBoostPowerDownRoutine());
+        }
+
     }
     IEnumerator SpeedBoostPowerDownRoutine()
     {
@@ -434,7 +443,7 @@ public class Player : MonoBehaviour
     IEnumerator MonkeyPowerDownRoutine()
     {
         yield return new WaitForSeconds(5.0f);
-        _speed = 4f;
+        _speed = 6f;
         _fireRate = 0.15f;
         _playerBlinking = false;
         
@@ -487,13 +496,13 @@ public class Player : MonoBehaviour
 
     }
 
-    public void AddScore(int points)
-    {
-        _score += points;
-        _uiManager.UpdateScore(_score);
-
-    }
-
+    //public void AddScore(int points)
+   // {
+   //     _score += points;
+    //    _uiManager.UpdateScore(_score);
+//
+ //   }
+//
 
 
 

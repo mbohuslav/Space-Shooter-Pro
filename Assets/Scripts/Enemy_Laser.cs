@@ -9,6 +9,8 @@ public class Enemy_Laser : MonoBehaviour
     private Player _player;
     [SerializeField]
     private AudioSource _audioSource;
+    [SerializeField]
+    private int[] _projectileType;
 
     // Start is called before the first frame update
     void Start()
@@ -24,7 +26,7 @@ public class Enemy_Laser : MonoBehaviour
     void Update()
     {
         transform.Translate(Vector3.down * _speed * Time.deltaTime);
-        if (transform.position.y <= -6f)
+        if (transform.position.y <= -9f)
         {       
             if (transform.parent != null)
             {
@@ -43,12 +45,12 @@ public class Enemy_Laser : MonoBehaviour
             if (player != null)
             {
                 player.Damage();
-                _audioSource.Play();
-                Destroy(GetComponent<SpriteRenderer>());
-                Destroy(this.gameObject, 3.018f);
+              //  _audioSource.Play(); not needed
+             //   Destroy(GetComponent<SpriteRenderer>());  //?? not needed I must have been tired!
+               Destroy(this.gameObject);  //?? delay not needed 
             }
         }
-        if (other.tag == "Enemy")
+       /* if (other.tag == "Enemy")
         {
             Enemy enemy = other.transform.GetComponent<Enemy>();
 
@@ -56,7 +58,7 @@ public class Enemy_Laser : MonoBehaviour
             {
                 Destroy(this.gameObject);
             }
-        }
+        }*/
     }
 
 }

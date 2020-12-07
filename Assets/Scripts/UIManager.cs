@@ -21,18 +21,23 @@ public class UIManager : MonoBehaviour
     private Image _AmmoImg;
     [SerializeField]
     private Text _newEnemyWave;
-
+    [SerializeField]
+    private AudioSource _audioSource;
+    [SerializeField]
+    private AudioClip _NewEnemyWaveSounds;
+    [SerializeField]
+    private AudioClip _gameOverSound;
     [SerializeField]
     private Image _thrusterReserve;
-    private float _depletionRate = 0.40f;
-    private float _ThrusterRecharge = 0.12f;
+    private float _depletionRate = 0.30f;
+    private float _ThrusterRecharge = 0.15f;
     private float _ThrusterAccelRecharge = 1f;
     private float _maxThrusterReserve = 1.75f;
     private float _currentThrusterReserve;
 
     public bool ThrusterActive = true;
-    
 
+    private int _playerScore;
 
     public float _timestamp;
     private Player _player;
@@ -46,7 +51,8 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         _player = GameObject.Find("Player").GetComponent<Player>();
-        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>(); 
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        //EnemyWave = 0;
        
         if (_spawnManager == null)
         {
@@ -92,9 +98,13 @@ public class UIManager : MonoBehaviour
 
     void GameOverSequence()
     {
+       // EnemyWave = 0;
         _gameManager.GameOver();
         _restartText.gameObject.SetActive(true);
         StartCoroutine(GameOverFlicker());
+        _audioSource.clip = _gameOverSound;
+        _audioSource.volume = 1f;
+        _audioSource.Play();
     }
 
     IEnumerator GameOverFlicker()
@@ -118,13 +128,13 @@ public class UIManager : MonoBehaviour
             _player.ThrusterActive(true);
             _currentThrusterReserve -= _depletionRate * Time.deltaTime;
             _currentThrusterReserve = Mathf.Clamp(0, _currentThrusterReserve, 0);
-            _thrusterReserve.rectTransform.localScale = new Vector3(_currentThrusterReserve, 0.35f, 1);
+            _thrusterReserve.rectTransform.localScale = new Vector3(_currentThrusterReserve, 0.60f, 1);
         }
         if (Input.GetKey(KeyCode.LeftShift) == false && ThrusterActive == true && _currentThrusterReserve > 0)
         {
             _currentThrusterReserve += _ThrusterRecharge * Time.deltaTime;
             _currentThrusterReserve = Mathf.Min(_maxThrusterReserve, _currentThrusterReserve);
-            _thrusterReserve.rectTransform.localScale = new Vector3(_currentThrusterReserve, 0.35f, 1);
+            _thrusterReserve.rectTransform.localScale = new Vector3(_currentThrusterReserve, 0.60f, 1);
         }
 
         if (_currentThrusterReserve <= 0)
@@ -152,50 +162,52 @@ public class UIManager : MonoBehaviour
     {
         _currentThrusterReserve += (_ThrusterAccelRecharge * Time.deltaTime);
         _currentThrusterReserve = Mathf.Min(_maxThrusterReserve, _currentThrusterReserve);
-        _thrusterReserve.rectTransform.localScale = new Vector3(_currentThrusterReserve, 0.35f, 1);
+        _thrusterReserve.rectTransform.localScale = new Vector3(_currentThrusterReserve, 0.60f, 1);
     }
-
-    public void UpdateScore(int playerScore)
+    
+    public void UpdateScore(int points)
     {
-        _scoreText.text = "Score: " + playerScore;
+         _playerScore += points;
+       
+        _scoreText.text = "Score: " + _playerScore;
 
-        if (playerScore == 50)
+        if (_playerScore == 100 || _playerScore == 105)
         {   
             EnemyWave = 1;
             StartCoroutine(NewEnemyWave());
         }
                 
-       if (playerScore == 100)
+       if (_playerScore == 200 || _playerScore == 205)
        { 
             EnemyWave = 2;
             StartCoroutine(NewEnemyWave());
        }
       
-        if (playerScore == 200)
+        if (_playerScore == 400 || _playerScore == 405)
         {   
             EnemyWave = 3;
             StartCoroutine(NewEnemyWave());
         }
        
-        if (playerScore == 400)
+        if (_playerScore == 700 || _playerScore == 705)
         {   
             EnemyWave = 4;
             StartCoroutine(NewEnemyWave());
         }
        
-        if (playerScore == 600)
+        if (_playerScore == 1000 || _playerScore == 1005)
         {   
             EnemyWave = 5;
             StartCoroutine(NewEnemyWave());
         }
 
-        if (playerScore == 800)
+        if (_playerScore == 1500 || _playerScore == 1505)
         {
             EnemyWave = 6;
             StartCoroutine(NewEnemyWave());
         }
         
-        if (playerScore == 1000)
+        if (_playerScore == 2000 || _playerScore == 2005)
         {
             EnemyWave = 7;
             StartCoroutine(NewEnemyWave());
@@ -203,8 +215,7 @@ public class UIManager : MonoBehaviour
 
 
         //trigger wave system when scores reach a certain level
-        //use some sort of Array or list
-        //trigger wave # text
+      
         //send wave information to SpawnManager
 
 
@@ -218,18 +229,24 @@ public class UIManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         _newEnemyWave.gameObject.SetActive(true);
-        yield return new WaitForSeconds(0.2f);
+        _audioSource.clip = _NewEnemyWaveSounds;
+        _audioSource.volume = 0.25f;
+        _audioSource.Play();
+        yield return new WaitForSeconds(0.28f);
         _newEnemyWave.gameObject.SetActive(false);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.28f);
         _newEnemyWave.gameObject.SetActive(true);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.28f);
         _newEnemyWave.gameObject.SetActive(false);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.28f);
         _newEnemyWave.gameObject.SetActive(true);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.28f);
         _newEnemyWave.gameObject.SetActive(false);
-        yield return new WaitForSeconds(0.2f);
-      
+        yield return new WaitForSeconds(0.28f);
+        _newEnemyWave.gameObject.SetActive(true);
+        yield return new WaitForSeconds(0.28f);
+        _newEnemyWave.gameObject.SetActive(false);
+        yield return new WaitForSeconds(0.28f);
     }
 
 
