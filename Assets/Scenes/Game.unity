@@ -888,6 +888,8 @@ MonoBehaviour:
   - {fileID: 5053332432526984724, guid: b8f793211ba2a094a8ff52a2151a312b, type: 3}
   - {fileID: 8915294069754074952, guid: 64ad4a95dd10d0447a4d3a3e7060f91a, type: 3}
   - {fileID: 1495558816170934262, guid: 61026fc961366cf4594a155ecfac1d51, type: 3}
+  - {fileID: 2625009853829687016, guid: 6f021662a38330e4fbc8434ed2d2c37f, type: 3}
+  - {fileID: 4684781780297855371, guid: 0151604809aa33d45b614860227cc6e5, type: 3}
   rarepowerups:
   - {fileID: 2625009853829687016, guid: 6f021662a38330e4fbc8434ed2d2c37f, type: 3}
   - {fileID: 4684781780297855371, guid: 0151604809aa33d45b614860227cc6e5, type: 3}
@@ -895,6 +897,7 @@ MonoBehaviour:
   _enemySpawnDetection: 0
   _uiManager: {fileID: 1654354766}
   EnemyType: 0
+  spawnTime: []
 --- !u!4 &801212341
 Transform:
   m_ObjectHideFlags: 0

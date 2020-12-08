@@ -53,7 +53,7 @@ public class UIManager : MonoBehaviour
         _player = GameObject.Find("Player").GetComponent<Player>();
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         //EnemyWave = 0;
-       
+
         if (_spawnManager == null)
         {
             Debug.LogError("Player is NULL");
@@ -74,7 +74,7 @@ public class UIManager : MonoBehaviour
         {
             Debug.LogError("GameManager is NULL");
         }
-        
+
     }
     public void UpdateAmmo(int currentAmmo)
     {
@@ -84,10 +84,10 @@ public class UIManager : MonoBehaviour
         {
         }
     }
-    
-    
+
+
     public void Updatelives(int currentlives)
-    {       
+    {
         _LivesImg.sprite = _livesprites[currentlives];
 
         if (currentlives == 0)
@@ -98,7 +98,7 @@ public class UIManager : MonoBehaviour
 
     void GameOverSequence()
     {
-       // EnemyWave = 0;
+        // EnemyWave = 0;
         _gameManager.GameOver();
         _restartText.gameObject.SetActive(true);
         StartCoroutine(GameOverFlicker());
@@ -115,9 +115,9 @@ public class UIManager : MonoBehaviour
             yield return new WaitForSeconds(0.4f);
             _gameOver.gameObject.SetActive(false);
             yield return new WaitForSeconds(0.4f);
-            
+
         }
-        
+
     }
 
     // Update is called once per frame
@@ -142,15 +142,15 @@ public class UIManager : MonoBehaviour
             _player.ThrusterActive(false);
             StartCoroutine(ThrusterCoolDown());
         }
-       
+
     }
-  
+
     public void MonkeyKillThruster()
     {
         StartCoroutine(ThrusterCoolDown());
     }
 
-   IEnumerator ThrusterCoolDown()
+    IEnumerator ThrusterCoolDown()
     {
         ThrusterActive = false;
         yield return new WaitForSeconds(5.0f);
@@ -164,59 +164,53 @@ public class UIManager : MonoBehaviour
         _currentThrusterReserve = Mathf.Min(_maxThrusterReserve, _currentThrusterReserve);
         _thrusterReserve.rectTransform.localScale = new Vector3(_currentThrusterReserve, 0.60f, 1);
     }
-    
+
     public void UpdateScore(int points)
     {
-         _playerScore += points;
-       
+        _playerScore += points;
+         
         _scoreText.text = "Score: " + _playerScore;
 
-        if (_playerScore == 100 || _playerScore == 110)
+        if (_playerScore >= 50 && EnemyWave == 0)
         {   
             EnemyWave = 1;
             StartCoroutine(NewEnemyWave());
         }
                 
-       if (_playerScore == 200 || _playerScore == 210)
-       { 
+       if (_playerScore >= 100 && EnemyWave == 1)
+       {
             EnemyWave = 2;
             StartCoroutine(NewEnemyWave());
        }
-      
-        if (_playerScore == 400 || _playerScore == 410)
+     
+        if (_playerScore >= 400 && EnemyWave == 2)
         {   
             EnemyWave = 3;
             StartCoroutine(NewEnemyWave());
         }
        
-        if (_playerScore == 700 || _playerScore == 710)
+        if (_playerScore >= 700 && EnemyWave ==3)
         {   
             EnemyWave = 4;
             StartCoroutine(NewEnemyWave());
         }
        
-        if (_playerScore == 1000 || _playerScore == 1010)
+        if (_playerScore >= 1000 && EnemyWave == 4)
         {   
             EnemyWave = 5;
             StartCoroutine(NewEnemyWave());
         }
 
-        if (_playerScore == 1500 || _playerScore == 1510)
-        {
-            EnemyWave = 6;
+        if (_playerScore >= 1500 && EnemyWave == 5)
+        {      EnemyWave = 6;
             StartCoroutine(NewEnemyWave());
         }
         
-        if (_playerScore == 2000 || _playerScore == 2010)
+        if (_playerScore >= 2000 && EnemyWave == 6)
         {
             EnemyWave = 7;
             StartCoroutine(NewEnemyWave());
         }
-
-
-        //trigger wave system when scores reach a certain level
-      
-        //send wave information to SpawnManager
 
 
     }

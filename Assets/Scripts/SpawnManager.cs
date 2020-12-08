@@ -15,6 +15,7 @@ public class SpawnManager : MonoBehaviour
     private GameObject[] powerups;
     [SerializeField]
     private GameObject[] rarepowerups;
+    
 
     [SerializeField]
     private bool _stopSpawning = false;
@@ -25,6 +26,7 @@ public class SpawnManager : MonoBehaviour
     private int _enemyWave;
     public int  EnemyType;
     bool[] spawned;
+    public float[]  spawnTime;
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +35,7 @@ public class SpawnManager : MonoBehaviour
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _wave = new GameObject[7];
         spawned = new bool[3];
+        spawnTime = new float[6];
 
         if (_player == null)
         {
@@ -49,7 +52,7 @@ public class SpawnManager : MonoBehaviour
         StartCoroutine(SpawnRoutine());
         StartCoroutine(AsteroidSpawnRoutine());
         StartCoroutine(SpawnPowerUpRoutine());
-        StartCoroutine(SpawnRarePowerUpRoutine());
+      //  StartCoroutine(SpawnRarePowerUpRoutine());
     }
 
     // Update is called once per frame
@@ -206,28 +209,98 @@ public class SpawnManager : MonoBehaviour
     IEnumerator SpawnPowerUpRoutine()
 
     {
-        yield return new WaitForSeconds(Random.Range(4.0f, 8.0f));
         while (_stopSpawning == false)
         {
-            Vector3 posToSpawn = new Vector3(Random.Range(-10f, 10f), 9f, 0);
-            int randomPowerUp = Random.Range(0, 5);
-            Instantiate(powerups[randomPowerUp], posToSpawn, Quaternion.identity);
-            yield return new WaitForSeconds(Random.Range(4.0f, 9.0f));
+            switch (_enemyWave)
+            {
+                case 0:
+                    spawnTime[_enemyWave] = Random.Range(10f, 14f);
+                    Debug.Log("PowerUp Wave 0");
+                    break;
+                case 1:
+                    spawnTime[_enemyWave] = Random.Range(9f, 13f);
+                    Debug.Log("PowerUp Wave 1");
+                    break;
+                case 2:
+                    spawnTime[_enemyWave] = Random.Range(8f, 12f);
+                    Debug.Log("PowerUp Wave 2");
+                    break;
+                case 3:
+                    spawnTime[_enemyWave] = Random.Range(7f, 11f);
+                    Debug.Log("PowerUp Wave 3");
+                    break;
+                case 4:
+                    spawnTime[_enemyWave] = Random.Range(6f, 10f);
+                    Debug.Log("PowerUp Wave 4");
+                    break;
+                case 5:
+                    spawnTime[_enemyWave] = Random.Range(5f, 9f);
+                    Debug.Log("PowerUp Wave 5");
+                    break;
+                case 6:
+                    spawnTime[_enemyWave] = Random.Range(4f, 8f);
+                    Debug.Log("PowerUp Wave 6");
+                    break;
+                default:
+                    Debug.Log("Invalid Wave");
+                    break;
+            }
+
+            yield return new WaitForSeconds(spawnTime[_enemyWave]);
+
+                Vector3 posToSpawn = new Vector3(Random.Range(-10f, 10f), 9f, 0);
+
+            int randomPowerUp = Random.Range(0, 130);
+            int powerupID = 0;
+
+            if (randomPowerUp >= 0  && randomPowerUp <= 19)
+            {
+                powerupID = 0;
+            }
+            if(randomPowerUp >= 20 && randomPowerUp <= 39)
+            {
+                powerupID = 1;
+            }
+           if(randomPowerUp >= 40 && randomPowerUp <= 59)
+            {
+                powerupID = 2;
+            }
+            if(randomPowerUp >= 60 && randomPowerUp <= 89)
+            {
+                powerupID = 3;
+            }
+            if(randomPowerUp >= 90 && randomPowerUp <= 104)
+            {
+                powerupID = 4;
+            }
+            if (randomPowerUp >= 105 && randomPowerUp <= 119)
+            {
+                powerupID = 5;
+            }
+            if (randomPowerUp >= 115 && randomPowerUp <= 129)
+            {
+                powerupID = 6;
+            }
+
+            Instantiate(powerups[powerupID], posToSpawn, Quaternion.identity);
         }
     }
-    IEnumerator SpawnRarePowerUpRoutine()
+ 
+  /*  IEnumerator SpawnRarePowerUpRoutine()
 
     {
         yield return new WaitForSeconds(Random.Range(12.0f, 24.0f));
         while (_stopSpawning == false)
         {
             Vector3 posToSpawn = new Vector3(Random.Range(-10f, 10f), 9f, 0);
+
+
             int randomRarePowerUp = Random.Range(0, 2);
             Instantiate(rarepowerups[randomRarePowerUp], posToSpawn, Quaternion.identity);
             yield return new WaitForSeconds(Random.Range(15.0f, 25.0f));
         }
     }  
-            
+      */      
 
     public void OnPlayerDeath()
     {
