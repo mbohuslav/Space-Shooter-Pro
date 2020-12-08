@@ -5,13 +5,14 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField]
-    private float _speed = 4.0f;
+    private float _speed = 4f;
    // private Player _player;
     private Animator _anim;
     [SerializeField]
     private AudioSource _audioSource;
     [SerializeField]
     private GameObject _enemyLaserPrefab;
+    [SerializeField]
     private int _enemyID;
     private int _enemyMoveType;
     private bool _canmove = true;
@@ -34,7 +35,7 @@ public class Enemy : MonoBehaviour
         pos = transform.position;
         axis = transform.right;
         _enemyMoveType = Random.Range(0,4);
-        transform.position = new Vector3(Random.Range(-8f, 8f), 7f, 0);
+        transform.position = new Vector3(Random.Range(-11f, 11f), 9f, 0);
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _anim = GetComponent<Animator>();
         _audioSource = GetComponent<AudioSource>();
@@ -54,7 +55,7 @@ public class Enemy : MonoBehaviour
             Debug.LogError("The UI Manager is NULL");
         }
 
-        if (_enemyID == 1)
+        if (_enemyID == 2)
         {
             _shieldsActive = true;
             _shieldVisualizer.SetActive(true);
@@ -101,11 +102,11 @@ public class Enemy : MonoBehaviour
             }
 
 
-            if (transform.position.y < -5.5f || transform.position.x < -14f || transform.position.x > 14f)
+            if (transform.position.y < -8.5f || transform.position.x < -14f || transform.position.x > 14f)
             {
-                float randomX = Random.Range(-8f, 8f);
+                float randomX = Random.Range(-11f, 11f);
                 _enemyMoveType = Random.Range(0, 4);
-                transform.position = new Vector3(randomX, 7f, 0);
+                transform.position = new Vector3(randomX, 9f, 0);
                 pos = transform.position;
             }
         }  
@@ -126,13 +127,6 @@ public class Enemy : MonoBehaviour
                     { StartCoroutine(FireLaser()); }
                     break;
                 case 1:
-                    yield return new WaitForSeconds(Random.Range(0.1f, 1.0f));
-                    Instantiate(_enemyLaserPrefab, transform.position + new Vector3(0, -0.584f, 0), Quaternion.identity);
-                    yield return new WaitForSeconds(Random.Range(1.5f, 3.0f));
-                    if (_canmove == true)
-                    { StartCoroutine(FireLaser()); }
-                    break;
-                case 2:
                     yield return new WaitForSeconds(Random.Range(0.01f, 1.0f));
                     Instantiate(_enemyLaserPrefab, transform.position + new Vector3(0, -0.584f, 0), Quaternion.identity);
                     yield return new WaitForSeconds(0.2f);
@@ -140,6 +134,13 @@ public class Enemy : MonoBehaviour
                     yield return new WaitForSeconds(0.2f);
                     Instantiate(_enemyLaserPrefab, transform.position + new Vector3(0, -0.584f, 0), Quaternion.identity);
                     yield return new WaitForSeconds(Random.Range(2.0f, 3.0f));
+                    if (_canmove == true)
+                    { StartCoroutine(FireLaser()); }
+                    break;
+                case 2:
+                    yield return new WaitForSeconds(Random.Range(0.1f, 1.0f));
+                    Instantiate(_enemyLaserPrefab, transform.position + new Vector3(0, -0.584f, 0), Quaternion.identity);
+                    yield return new WaitForSeconds(Random.Range(1.5f, 3.0f));
                     if (_canmove == true)
                     { StartCoroutine(FireLaser()); }
                     break;
@@ -164,7 +165,6 @@ public class Enemy : MonoBehaviour
 
         if (other.tag == "Player")
         {
-            // other.transform.GetComponent<Player>().Damage();  Not Optimized for Null Check
 
             Player player = other.transform.GetComponent<Player>();
 
@@ -173,7 +173,7 @@ public class Enemy : MonoBehaviour
                 player.Damage();
 
 
-                if (_shieldsActive == true)
+                if (_enemyID == 2 && _shieldsActive == true)
                 {
                     _shieldVisualizer.SetActive(false);
                     _shieldsActive = false;
@@ -194,7 +194,7 @@ public class Enemy : MonoBehaviour
         {
             Destroy(other.gameObject);
            
-            if (_shieldsActive == true)
+            if (_enemyID == 2 && _shieldsActive == true)
             {
                 _shieldVisualizer.SetActive(false);
                 _shieldsActive = false;
@@ -202,8 +202,8 @@ public class Enemy : MonoBehaviour
             }
             else
             {
-                if (_uiManager != null)
-                {
+               // if (_uiManager != null)
+                //{
                   //  if (_anim.GetCurrentAnimatorStateInfo(1).IsName("Enemy_Destroyed_anim"))
                   //  {
                    //     _audioSource.Play();
@@ -216,10 +216,6 @@ public class Enemy : MonoBehaviour
                         transform.gameObject.tag = "Dead Enemy";
                         Destroy(GetComponent<Collider2D>());
                         Destroy(this.gameObject, 2.5f);
-                    
-
-                }
-
               
             }
         }

@@ -29,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5968881904799437549}
   m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
-  m_LocalPosition: {x: -3.75, y: 2.99, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.4, y: 0.4, z: 1}
   m_Children:
   - {fileID: 9044275183137410175}
@@ -101,7 +101,7 @@ MonoBehaviour:
   _speed: 0
   _audioSource: {fileID: 8767715880997312416}
   _enemyLaserPrefab: {fileID: 0}
-  _enemyID: 3
+  _shieldVisualizer: {fileID: 0}
 --- !u!61 &5968881904799437537
 BoxCollider2D:
   m_ObjectHideFlags: 0

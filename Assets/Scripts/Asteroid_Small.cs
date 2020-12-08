@@ -87,7 +87,7 @@ public class Asteroid_Small : MonoBehaviour
         if (other.tag == "Laser")
         {
 
-            _uiManager.UpdateScore(5);
+            _uiManager.UpdateScore(20);
             Destroy(other.gameObject);
             _anim.SetTrigger("OnEnemyDeath");
             _audioSource.volume = 0.15f;

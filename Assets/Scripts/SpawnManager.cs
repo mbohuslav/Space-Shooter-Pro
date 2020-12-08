@@ -24,7 +24,7 @@ public class SpawnManager : MonoBehaviour
     public UIManager _uiManager;
     private int _enemyWave;
     public int  EnemyType;
-    
+    bool[] spawned;
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +32,8 @@ public class SpawnManager : MonoBehaviour
         _player = GameObject.Find("Player").GetComponent<Player>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _wave = new GameObject[7];
+        spawned = new bool[3];
+
         if (_player == null)
         {
             Debug.LogError("Player is NULL");
@@ -69,14 +71,14 @@ public class SpawnManager : MonoBehaviour
           {
              //  yield return new WaitForSeconds(Random.Range(2.0f, 6.0f));
 
-            Vector3 posToSpawn = new Vector3(Random.Range(-10f, 10f), 9f, 0);
+            Vector3 posToSpawn = new Vector3(Random.Range(-11f, 11f), 9f, 0);
                         
           _enemyWave = _uiManager.EnemyWave;
           switch (_enemyWave)
                   {     
                   case 0:
                       Debug.Log("0 wave playing");
-                      yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
+                      yield return new WaitForSeconds(Random.Range(3.0f, 6.0f));
                       for (int i = 0; i < 1; i++)
                       {
                           GameObject newEnemy = Instantiate(_enemyPrefab[EnemyType], posToSpawn, Quaternion.identity);
@@ -85,7 +87,7 @@ public class SpawnManager : MonoBehaviour
                       }
                       break;
                   case 1:
-                      yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
+                      yield return new WaitForSeconds(Random.Range(3.0f, 6.0f));
                       for (int i = 0; i <= 1; i++)
                       {
                         EnemyType = Random.Range(0, 2);
@@ -96,7 +98,7 @@ public class SpawnManager : MonoBehaviour
                       }
                        break;
                   case 2:
-                      yield return new WaitForSeconds(Random.Range(1.0f, 3.5f));
+                      yield return new WaitForSeconds(Random.Range(2.0f, 5f));
                       for (int i = 0; i <= 1; i++)
                       {
                         EnemyType = Random.Range(0, 2);
@@ -108,8 +110,14 @@ public class SpawnManager : MonoBehaviour
                       break;
                   case 3:
                       Debug.Log("3rd wave playing");
-                      yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
-                      for (int i = 0; i <= 2; i++)
+                    //Spawn 1 elite unit before regular wave
+                    if (spawned[0] == false)
+                    {
+                        Instantiate(_enemyPrefab[3], posToSpawn, Quaternion.identity);
+                        spawned[0] = true;
+                    }
+                    yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
+                      for (int i = 0; i <= 1; i++)
                       {
                         EnemyType = Random.Range(0, 3);
                           GameObject newEnemy = Instantiate(_enemyPrefab[EnemyType], posToSpawn, Quaternion.identity);
@@ -118,9 +126,16 @@ public class SpawnManager : MonoBehaviour
                       }
                       break;
                   case 4:
-                      Debug.Log("4th wave playing");
-                      yield return new WaitForSeconds(Random.Range(1.0f, 3.5f));
-                      for (int i = 0; i <= 2; i++)
+                    Debug.Log("4th wave playing");
+                    //Spawn 1 elite unit before regular wave
+                    
+                    if (spawned[1] == false)
+                    {
+                     Instantiate(_enemyPrefab[3], posToSpawn, Quaternion.identity);
+                        spawned[1] = true;
+                    }
+                    yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
+                      for (int i = 0; i <= 1; i++)
                       {
                         EnemyType = Random.Range(0, 3);
                           GameObject newEnemy = Instantiate(_enemyPrefab[EnemyType], posToSpawn, Quaternion.identity);
@@ -130,8 +145,8 @@ public class SpawnManager : MonoBehaviour
                       break;
                   case 5:
                       Debug.Log("5th wave playing");
-                      yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
-                      for (int i = 0; i <= 3; i++)
+                      yield return new WaitForSeconds(Random.Range(3.0f, 7.0f));
+                      for (int i = 0; i <= 2; i++)
                       {
                         EnemyType = Random.Range(0, 3);
                           GameObject newEnemy = Instantiate(_enemyPrefab[EnemyType], posToSpawn, Quaternion.identity);
@@ -140,9 +155,15 @@ public class SpawnManager : MonoBehaviour
                       }
                       break;
                   case 6:
-                      Debug.Log("6th wave playing");
-                      yield return new WaitForSeconds(Random.Range(1.0f, 3.5f));
-                      for (int i = 0; i <= 3; i++)
+                    Debug.Log("6th wave playing");
+                    //Spawn 1 elite unit before regular wave
+                    if (spawned[2] == false)
+                    {
+                      Instantiate(_enemyPrefab[3], posToSpawn, Quaternion.identity);
+                        spawned[2] = true;
+                    }
+                      yield return new WaitForSeconds(Random.Range(3.0f, 7f));
+                      for (int i = 0; i <= 2; i++)
                       {
                         EnemyType = Random.Range(0, 3);
                           GameObject newEnemy = Instantiate(_enemyPrefab[EnemyType], posToSpawn, Quaternion.identity);
@@ -151,9 +172,15 @@ public class SpawnManager : MonoBehaviour
                       }
                       break;
                   case 7:
-                      Debug.Log("7th wave playing");
-                      yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
-                      for (int i = 0; i <= 4; i++)
+                    Debug.Log("7th wave playing");
+                    //Spawn 1 elite unit before regular wave
+                    if (spawned[3] == false)
+                    {
+                    Instantiate(_enemyPrefab[3], posToSpawn, Quaternion.identity);
+                        spawned[3] = true;
+                    }
+                    yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
+                      for (int i = 0; i <= 2; i++)
                       {
                         EnemyType = Random.Range(0, 3);
                           GameObject newEnemy = Instantiate(_enemyPrefab[EnemyType], posToSpawn, Quaternion.identity);
@@ -199,7 +226,7 @@ public class SpawnManager : MonoBehaviour
             Instantiate(rarepowerups[randomRarePowerUp], posToSpawn, Quaternion.identity);
             yield return new WaitForSeconds(Random.Range(15.0f, 25.0f));
         }
-    }
+    }  
             
 
     public void OnPlayerDeath()

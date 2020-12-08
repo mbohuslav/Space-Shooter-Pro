@@ -171,43 +171,43 @@ public class UIManager : MonoBehaviour
        
         _scoreText.text = "Score: " + _playerScore;
 
-        if (_playerScore == 100 || _playerScore == 105)
+        if (_playerScore == 100 || _playerScore == 110)
         {   
             EnemyWave = 1;
             StartCoroutine(NewEnemyWave());
         }
                 
-       if (_playerScore == 200 || _playerScore == 205)
+       if (_playerScore == 200 || _playerScore == 210)
        { 
             EnemyWave = 2;
             StartCoroutine(NewEnemyWave());
        }
       
-        if (_playerScore == 400 || _playerScore == 405)
+        if (_playerScore == 400 || _playerScore == 410)
         {   
             EnemyWave = 3;
             StartCoroutine(NewEnemyWave());
         }
        
-        if (_playerScore == 700 || _playerScore == 705)
+        if (_playerScore == 700 || _playerScore == 710)
         {   
             EnemyWave = 4;
             StartCoroutine(NewEnemyWave());
         }
        
-        if (_playerScore == 1000 || _playerScore == 1005)
+        if (_playerScore == 1000 || _playerScore == 1010)
         {   
             EnemyWave = 5;
             StartCoroutine(NewEnemyWave());
         }
 
-        if (_playerScore == 1500 || _playerScore == 1505)
+        if (_playerScore == 1500 || _playerScore == 1510)
         {
             EnemyWave = 6;
             StartCoroutine(NewEnemyWave());
         }
         
-        if (_playerScore == 2000 || _playerScore == 2005)
+        if (_playerScore == 2000 || _playerScore == 2010)
         {
             EnemyWave = 7;
             StartCoroutine(NewEnemyWave());

@@ -53,7 +53,6 @@ MonoBehaviour:
   _audioSource: {fileID: -4831678048987357006}
   _enemyLaserPrefab: {fileID: 35256463633915650, guid: f8fb0061fee4fff48ac4d34621b188e2,
     type: 3}
-  _enemyID: 0
   _shieldVisualizer: {fileID: 3604200812438781938}
 --- !u!212 &990597242822627863
 SpriteRenderer:

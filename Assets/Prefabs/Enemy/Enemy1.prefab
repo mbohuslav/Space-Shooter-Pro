@@ -30,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6589542770672081298}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.732, y: -0.016, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.44224378, y: 0.56224376, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -53,6 +53,8 @@ MonoBehaviour:
   _enemyLaserPrefab: {fileID: 5186251486110389124, guid: e56f68f3c7a5e424d82969821f9c3f4a,
     type: 3}
   _enemyID: 1
+  _shieldVisualizer: {fileID: 3965184007724262757, guid: c522d62ac071c6a46b6ac7bd6e515276,
+    type: 3}
 --- !u!212 &7966985839415461025
 SpriteRenderer:
   m_ObjectHideFlags: 0

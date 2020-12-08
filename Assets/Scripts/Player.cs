@@ -164,10 +164,10 @@ public class Player : MonoBehaviour
                         _thrusterVisualizer[0].SetActive(false);
                     }
 
-                    if (Input.GetKey(KeyCode.LeftShift) == false || isThrusterActive == false)
+                    if (Input.GetKeyUp(KeyCode.LeftShift) == true || isThrusterActive == false)
                     {
-                        // _velocity = 0;
-                        transform.Translate(direction * _speed * Time.deltaTime);     //+ _velocity removed after speed
+                        _velocity = 0;
+                        transform.Translate(direction * (_speed + _velocity) * Time.deltaTime);    
                         _thrusterVisualizer[0].SetActive(true);
                         _thrusterVisualizer[1].SetActive(false);
                     }
@@ -324,7 +324,7 @@ public class Player : MonoBehaviour
             _speed = 0;
             // Destroy(GetComponent<SpriteRenderer>(), 0.25f);
             StartCoroutine(DestroyPlayerSpriteRoutine());
-            Destroy(GetComponent<Collider2D>());
+            Destroy(GetComponent<CircleCollider2D>());
             foreach (Transform child in playerChildHolder.transform)
                 Destroy(child.gameObject.GetComponent<SpriteRenderer>());
             Destroy(this.gameObject, 3.018f);

@@ -53,6 +53,7 @@ MonoBehaviour:
   _audioSource: {fileID: 7205103284786673497}
   _enemyLaserPrefab: {fileID: 35256463633915650, guid: f8fb0061fee4fff48ac4d34621b188e2,
     type: 3}
+  _enemyID: 2
   _shieldVisualizer: {fileID: 8954815611498699077}
 --- !u!212 &5958416080452404732
 SpriteRenderer:
@@ -327,6 +328,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6925567786635695006, guid: c522d62ac071c6a46b6ac7bd6e515276,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.92156863
+      objectReference: {fileID: 0}
+    - target: {fileID: 6925567786635695006, guid: c522d62ac071c6a46b6ac7bd6e515276,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.92156863
+      objectReference: {fileID: 0}
+    - target: {fileID: 6925567786635695006, guid: c522d62ac071c6a46b6ac7bd6e515276,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.92156863
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c522d62ac071c6a46b6ac7bd6e515276, type: 3}
