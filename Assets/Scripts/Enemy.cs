@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private GameObject _enemyLaserPrefab;
     [SerializeField]
-    private GameObject _enemyLaserPrefabAlt;
+    public GameObject _enemyLaserPrefabAlt;
     private int _enemyID;
     private GameObject _enemyModel;
     private string _enemyName;
@@ -25,8 +25,6 @@ public class Enemy : MonoBehaviour
     private GameObject _shieldVisualizer;
     private bool _shieldsActive = false;
     public int firePattern;
-    [SerializeField]
-    public bool FireBackwards;
     GameObject _powerUp;
     // player tracking for movetowards
     
@@ -43,8 +41,7 @@ public class Enemy : MonoBehaviour
     //Ray casting firing speed
     float _FireRate = 2f;
     float _canFire = -1f;
-
-
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -110,7 +107,7 @@ public class Enemy : MonoBehaviour
 
             if (_targetplayer != null && _enemyName == "Enemy0b(Clone)" && distance <= 6f)
 
-            { transform.position = Vector3.MoveTowards(transform.position, target, velocity*2); }
+            { transform.position = Vector3.MoveTowards(transform.position, target, velocity); }
 
 
             else
@@ -200,36 +197,39 @@ public class Enemy : MonoBehaviour
     void FixedUpdate()
     {
         if (Time.time > _canFire)
-        RayCastmethod();
+        {
+            FireAtPowerUp();
+            FireAtPlayer();
+        }
     }
 
     
     
-    private void RayCastmethod()
+    private void FireAtPowerUp()
     {
-      
-     
-
-    int layerMask = LayerMask.GetMask("Default");
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, Mathf.Infinity, layerMask);
+        int layerMask = LayerMask.GetMask("Default");
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, Mathf.Infinity, layerMask);
 
         if (hit.collider != null && hit.collider.tag == "PowerUp")
         {
-           
             _canFire = Time.time + _FireRate;
-            Instantiate(_enemyLaserPrefabAlt, transform.position + new Vector3(0, -0.584f, 0), Quaternion.identity);
+            Instantiate(_enemyLaserPrefab, transform.position + new Vector3(0, -0.584f, 0), Quaternion.identity);
             Debug.Log("PowerUp Fired at");
-                        
         }        
-            
-        
     }
 
-  // if (firePattern == 1)
-   //  FireBackwards = true;
-    // FireBackwards = false;      
-    
+    private void FireAtPlayer()
+    {
+        int layerMask = LayerMask.GetMask("Default");
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.up, Mathf.Infinity, layerMask);
 
+        if (hit.collider != null && hit.collider.tag == "Player" && firePattern == 1)
+        {
+            _canFire = Time.time + _FireRate;
+            Instantiate(_enemyLaserPrefabAlt, transform.position + new Vector3(0, -0.584f, 0), Quaternion.identity);
+            Debug.Log("Player Fired at");
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {    

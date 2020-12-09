@@ -386,7 +386,7 @@ public class Player : MonoBehaviour
     public void TripleShotActive()
     {
         _tripleShotActive = true;
-        _ammoCount += 5;
+        _ammoCount += 15;
         _ammoCount = Mathf.Min(15, _ammoCount);
         _uiManager.UpdateAmmo(_ammoCount);
 

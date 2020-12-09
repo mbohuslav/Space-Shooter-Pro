@@ -11,43 +11,31 @@ public class Enemy_Laser : MonoBehaviour
     private AudioSource _audioSource;
     [SerializeField]
     private int[] _projectileType;
-    private Enemy _enemy;
+  
     // Start is called before the first frame update
     void Start()
     {
-       _enemy = GameObject.FindWithTag("Enemy").GetComponent<Enemy>();
-       if (_enemy == null)
-        {
-            Debug.LogError("Enemy is NULL");
-        }
+       
    
     }
    
     // Update is called once per frame
     void Update()
     {
-        /*  if (_enemy.FireBackwards == true && _enemy.firePattern == 1)
-          {
-              transform.Translate(Vector3.up * _speed * Time.deltaTime);
-              _enemy.FireBackwards = true;
-          }
+    
+        transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        
 
-          else
-          { */
-        if (_enemy != null)
+
+        if (transform.position.y <= -9f)
         {
-            transform.Translate(Vector3.down * _speed * Time.deltaTime);
-
-
-            if (transform.position.y <= -9f)
-            {
-                if (transform.parent != null)
-                {
-                    Destroy(transform.parent.gameObject);
-                }
-                Destroy(this.gameObject);
-            }
+             if (transform.parent != null)
+             {
+                Destroy(transform.parent.gameObject);
+             }
+             Destroy(this.gameObject);
         }
+        
         
     }
     private void OnTriggerEnter2D(Collider2D other)

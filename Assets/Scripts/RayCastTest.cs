@@ -25,7 +25,6 @@ public class RayCastTest : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down * 12f, layerMask);
         if (hit.collider != null)
             Debug.Log("Hitting: " + hit.collider.tag);
-
         Debug.DrawRay(transform.position, Vector2.down * 12, Color.green, 0.01f);
         Debug.DrawLine(transform.position, hit.collider.transform.position, Color.red, 0.01f);
         SpriteRenderer sprite = hit.collider.gameObject.GetComponent<SpriteRenderer>();
