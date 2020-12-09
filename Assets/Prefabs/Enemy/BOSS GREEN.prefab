@@ -101,6 +101,7 @@ MonoBehaviour:
   _speed: 0
   _audioSource: {fileID: 8767715880997312416}
   _enemyLaserPrefab: {fileID: 0}
+  _enemyID: 0
   _shieldVisualizer: {fileID: 0}
 --- !u!61 &5968881904799437537
 BoxCollider2D:

@@ -53,8 +53,11 @@ MonoBehaviour:
   _audioSource: {fileID: 7205103284786673497}
   _enemyLaserPrefab: {fileID: 35256463633915650, guid: f8fb0061fee4fff48ac4d34621b188e2,
     type: 3}
-  _enemyID: 2
+  _enemyLaserPrefabAlt: {fileID: 35256463633915650, guid: f8fb0061fee4fff48ac4d34621b188e2,
+    type: 3}
   _shieldVisualizer: {fileID: 8954815611498699077}
+  firePattern: 2
+  FireBackwards: 0
 --- !u!212 &5958416080452404732
 SpriteRenderer:
   m_ObjectHideFlags: 0

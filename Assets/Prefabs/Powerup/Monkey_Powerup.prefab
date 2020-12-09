@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 7655196448611531731}
   m_Layer: 0
   m_Name: Monkey_Powerup
-  m_TagString: Untagged
+  m_TagString: PowerUp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -100,6 +100,7 @@ MonoBehaviour:
   _speed: 3
   _powerUpID: 6
   _clip: {fileID: 8300000, guid: eac5c6ff721797340a84fe4be9458e9c, type: 3}
+  _tractorBeam: {fileID: 8300000, guid: 2332e54f52271664cb4d61821349ed02, type: 3}
 --- !u!58 &4684781780297855373
 CircleCollider2D:
   m_ObjectHideFlags: 0

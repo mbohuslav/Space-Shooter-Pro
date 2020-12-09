@@ -13,7 +13,10 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private GameObject _enemyLaserPrefab;
     [SerializeField]
+    private GameObject _enemyLaserPrefabAlt;
     private int _enemyID;
+    private GameObject _enemyModel;
+    private string _enemyName;
     private int _enemyMoveType;
     private bool _canmove = true;
     private SpawnManager _spawnManager;
@@ -21,12 +24,25 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private GameObject _shieldVisualizer;
     private bool _shieldsActive = false;
+    public int firePattern;
+    [SerializeField]
+    public bool FireBackwards;
+    GameObject _powerUp;
+    // player tracking for movetowards
     
+    GameObject _targetplayer;
+
+    private Vector3 target;
+
     //zigzag movement for enemy
     Vector3 pos;
     Vector3 axis;
     float frequency = 2.4f; // Speed of sine movement
     float magnitude = 3f; //  Size of sine movement
+
+    //Ray casting firing speed
+    float _FireRate = 2f;
+    float _canFire = -1f;
 
 
     // Start is called before the first frame update
@@ -41,6 +57,8 @@ public class Enemy : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _enemyID = _spawnManager.EnemyType;
+        _targetplayer = GameObject.FindWithTag("Player");
+        _powerUp = GameObject.FindWithTag("PowerUp");
 
         if (_anim == null)
         {
@@ -61,10 +79,18 @@ public class Enemy : MonoBehaviour
             _shieldVisualizer.SetActive(true);
         }
 
+        _enemyModel = this.gameObject;
+        _enemyName = _enemyModel.name;
 
+        if (_enemyName == "Enemy0(Clone)")
+        { firePattern = 0; }
+        if (_enemyName == "Enemy1(Clone)")
+        { firePattern = 1; }
+        if (_enemyName == "Enemy0b(Clone)")
+        { firePattern = 2; }
 
-        StartCoroutine(FireLaser()); 
-
+       StartCoroutine(FireLaser());
+      
     }
 
     // Update is called once per frame
@@ -72,35 +98,49 @@ public class Enemy : MonoBehaviour
     {
         if (_canmove == true)
         {
-            float velocity = _speed * Time.deltaTime;
+           
             
 
-            switch (_enemyMoveType)
+            float distance = Vector3.Distance(target, transform.position);
+            float velocity = _speed * Time.deltaTime;
+            if(_targetplayer != null)
             {
-
-                case 0:
-                    transform.Translate(Vector3.down * velocity);
-                    break;
-                case 1:
-                    transform.Translate(-velocity * 0.75f, -velocity * 0.75f, 0);
-                    break;
-                case 2:
-                    transform.Translate(velocity * 0.75f, -velocity * 0.75f, 0);
-                    break;
-                case 3:
-                    pos += Vector3.down * velocity;
-                    transform.position = pos + axis * Mathf.Cos(Time.time * frequency) * magnitude;
-                    break;
-                /* case 4:
-                     _timeCount -= Time.deltaTime;
-                     transform.Translate(x * velocity, y * velocity, z);
-                     break; */
-
-                default:
-                    Debug.Log("Not a valid Shield Strength");
-                    break;
+                target = _targetplayer.transform.position;
             }
 
+            if (_targetplayer != null && _enemyName == "Enemy0b(Clone)" && distance <= 6f)
+
+            { transform.position = Vector3.MoveTowards(transform.position, target, velocity*2); }
+
+
+            else
+            {
+                switch (_enemyMoveType)
+                {
+
+                    case 0:
+                        transform.Translate(Vector3.down * velocity);
+                        break;
+                    case 1:
+                        transform.Translate(-velocity * 0.75f, -velocity * 0.75f, 0);
+                        break;
+                    case 2:
+                        transform.Translate(velocity * 0.75f, -velocity * 0.75f, 0);
+                        break;
+                    case 3:
+                        pos += Vector3.down * velocity;
+                        transform.position = pos + axis * Mathf.Cos(Time.time * frequency) * magnitude;
+                        break;
+                    /* case 4:
+                         _timeCount -= Time.deltaTime;
+                         transform.Translate(x * velocity, y * velocity, z);
+                         break; */
+
+                    default:
+                        Debug.Log("Not a valid Shield Strength");
+                        break;
+                }
+            }
 
             if (transform.position.y < -8.5f || transform.position.x < -14f || transform.position.x > 14f)
             {
@@ -112,12 +152,13 @@ public class Enemy : MonoBehaviour
         }  
 
     }
-
     IEnumerator FireLaser()
     {
         if (_canmove == true)
         {
-            switch (_enemyID)
+
+
+            switch (firePattern)
             {
                 case 0:
                     yield return new WaitForSeconds(Random.Range(0.1f, 1.0f));
@@ -138,6 +179,7 @@ public class Enemy : MonoBehaviour
                     { StartCoroutine(FireLaser()); }
                     break;
                 case 2:
+            
                     yield return new WaitForSeconds(Random.Range(0.1f, 1.0f));
                     Instantiate(_enemyLaserPrefab, transform.position + new Vector3(0, -0.584f, 0), Quaternion.identity);
                     yield return new WaitForSeconds(Random.Range(1.5f, 3.0f));
@@ -153,13 +195,42 @@ public class Enemy : MonoBehaviour
         { 
             Debug.Log("Lasers are disabled"); 
         }
-           
-        
+    }
 
-    //    yield return new WaitForSeconds(Random.Range(1.0f, 2.0f));
-    //    Instantiate(_enemyLaserPrefab, transform.position + new Vector3(0, -1.05f, 0), Quaternion.identity);
-    //    yield return new WaitForSeconds(Random.Range(1.0f, 3.0f));
-    } 
+    void FixedUpdate()
+    {
+        if (Time.time > _canFire)
+        RayCastmethod();
+    }
+
+    
+    
+    private void RayCastmethod()
+    {
+      
+     
+
+    int layerMask = LayerMask.GetMask("Default");
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, Mathf.Infinity, layerMask);
+
+        if (hit.collider != null && hit.collider.tag == "PowerUp")
+        {
+           
+            _canFire = Time.time + _FireRate;
+            Instantiate(_enemyLaserPrefabAlt, transform.position + new Vector3(0, -0.584f, 0), Quaternion.identity);
+            Debug.Log("PowerUp Fired at");
+                        
+        }        
+            
+        
+    }
+
+  // if (firePattern == 1)
+   //  FireBackwards = true;
+    // FireBackwards = false;      
+    
+
+
     private void OnTriggerEnter2D(Collider2D other)
     {    
 

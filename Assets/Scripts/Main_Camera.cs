@@ -18,19 +18,32 @@ public class Main_Camera : MonoBehaviour
 
     public void shake()
     {
+        
         _remainingShakeTime = ShakeDuration;
+        CameraShakeStrength = 0.05f;
         enabled = true;
     }
+
+    public void TractorBeam()
+    {
+        _remainingShakeTime = ShakeDuration;
+        CameraShakeStrength = 0.03f;
+        enabled = true;
+    }
+
 
     // Update is called once per frame
     void Update()
     {
         if (_remainingShakeTime <= 0)
-        { transform.localPosition = _initialCameraPosition;
+        {
+            transform.localPosition = _initialCameraPosition;
             enabled = false;
         }
         transform.Translate(Random.insideUnitCircle * CameraShakeStrength);
-        _remainingShakeTime -= Time.deltaTime;
+         _remainingShakeTime -= Time.deltaTime; 
     }
 
 }
+
+   

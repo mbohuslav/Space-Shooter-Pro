@@ -173,7 +173,7 @@ public class UIManager : MonoBehaviour
 
         if (_playerScore >= 50 && EnemyWave == 0)
         {   
-            EnemyWave = 1;
+            EnemyWave = 2;
             StartCoroutine(NewEnemyWave());
         }
                 

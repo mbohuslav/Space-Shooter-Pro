@@ -65,13 +65,15 @@ public class Player : MonoBehaviour
     public GameObject playerChildHolder;
     [SerializeField]
     private GameObject _homingMissilePrefab;
-    
+
     //Color change variables
     private bool _playerBlinking = false;
     private Color _targetColor;
     private Color _startingColor;
     [SerializeField]
     private SpriteRenderer _playerRenderer;
+
+    public Vector3 PlayerTarget; // target for PowerUp Pickup
 
     void Start()
     {
@@ -108,7 +110,7 @@ public class Player : MonoBehaviour
         {
             _audioSource.clip = _laserSound;
         }
-      
+
         //Color blinking routine setup
         _startingColor = Color.white;
         _targetColor = Color.red;
@@ -130,8 +132,41 @@ public class Player : MonoBehaviour
             _uiManager.UpdateAmmo(_ammoCount);
         }
 
-      
+
     }
+  
+  /*  private void Ontriggerstay(Collider2D other)
+    {
+        if (other.tag == "PowerUp" && Input.GetKeyDown(KeyCode.C))
+        {
+            PowerUp Powerup = other.transform.GetComponent<PowerUp>();
+
+            if (Powerup != null)
+            {
+                other.transform.position = Vector3.MoveTowards(transform.position, PlayerTarget, _speed * Time.deltaTime);
+            }
+        }
+
+    }       
+                    
+  */            
+            
+               
+           
+        
+
+
+
+
+
+        //          I am checking the distance between the enemy and the player Vector3.Distance(transform.position, _player.transform.position) < 4f
+        // and use MoveTowards to process movements.
+        // transform.position = Vector3.MoveTowards(transform.position, target, _speed * Time.deltaTime);
+    
+    
+
+
+
     public void ThrusterActive(bool active)
     {
         isThrusterActive = active;

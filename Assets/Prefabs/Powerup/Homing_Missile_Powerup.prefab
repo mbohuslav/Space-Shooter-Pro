@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2625009853829687012}
   m_Layer: 0
   m_Name: Homing_Missile_Powerup
-  m_TagString: Untagged
+  m_TagString: PowerUp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -99,6 +99,7 @@ MonoBehaviour:
   _speed: 3
   _powerUpID: 5
   _clip: {fileID: 8300000, guid: 5ee343246919d2b4bba63ae629e95494, type: 3}
+  _tractorBeam: {fileID: 8300000, guid: 2332e54f52271664cb4d61821349ed02, type: 3}
 --- !u!61 &2625009853829687019
 BoxCollider2D:
   m_ObjectHideFlags: 0

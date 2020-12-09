@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8915294069754074950}
   m_Layer: 0
   m_Name: AmmoPower0
-  m_TagString: Untagged
+  m_TagString: PowerUp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -137,6 +137,7 @@ MonoBehaviour:
   _speed: 3
   _powerUpID: 3
   _clip: {fileID: 8300000, guid: 5ee343246919d2b4bba63ae629e95494, type: 3}
+  _tractorBeam: {fileID: 8300000, guid: 2332e54f52271664cb4d61821349ed02, type: 3}
 --- !u!95 &8915294069754074950
 Animator:
   serializedVersion: 3

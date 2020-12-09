@@ -9,6 +9,8 @@ public class Enemy_Elite : MonoBehaviour
     private int _hitpoints = 5;
     [SerializeField]
     private AudioSource _audioSource;
+    public AudioClip _laserSound;
+    public AudioClip _explosion;
     private SpawnManager _spawnManager;
     private UIManager _uiManager;
     private Animator _anim;
@@ -147,6 +149,9 @@ public class Enemy_Elite : MonoBehaviour
 
             if (_isLaserActive == true)
             {
+              //  _audioSource.clip = _laserSound;
+              //  _audioSource.volume = 0.22f;
+              //  _audioSource.Play();
                 _currentLaserLength += _beamIncreaseSpeed * Time.deltaTime;
                 _currentLaserLength = Mathf.Min(_currentLaserLength, _maxLength);
                 _enemyLaserBeam.rectTransform.localScale = new Vector3(1.2f, _currentLaserLength, 1f);
@@ -161,6 +166,9 @@ public class Enemy_Elite : MonoBehaviour
             }
             if (_isLaserActive == false)
             {
+               // _audioSource.clip = _laserSound;
+              //  _audioSource.volume = 0.15f;
+               // _audioSource.Play();
                 _currentLaserLength -= _beamDecreaseSpeed * Time.deltaTime;
                 _currentLaserLength = Mathf.Clamp(0, _currentLaserLength, 0);
                 _enemyLaserBeam.rectTransform.localScale = new Vector3(1.2f, _currentLaserLength, 1f);
@@ -207,6 +215,7 @@ public class Enemy_Elite : MonoBehaviour
                 {
                     _hitpoints -= 1;
                     _audioSource.volume = 0.10f;
+                    _audioSource.clip = _explosion;
                     _audioSource.Play();
                 }
 
@@ -216,6 +225,7 @@ public class Enemy_Elite : MonoBehaviour
                     _anim.SetTrigger("OnEnemyDeath");
                     _canfire = false;
                     _audioSource.volume = 0.22f;
+                    _audioSource.clip = _explosion;
                     _audioSource.Play();
                     transform.gameObject.tag = "Dead Enemy";
                     _speed = 0;
@@ -246,6 +256,7 @@ public class Enemy_Elite : MonoBehaviour
                 _anim.SetTrigger("OnEnemyDeath");
                 _canfire = false;
                 _audioSource.volume = 0.22f;
+                _audioSource.clip = _explosion;
                 _audioSource.Play();
                 transform.gameObject.tag = "Dead Enemy";
                 _speed = 0;

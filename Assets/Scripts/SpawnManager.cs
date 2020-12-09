@@ -104,7 +104,7 @@ public class SpawnManager : MonoBehaviour
                       yield return new WaitForSeconds(Random.Range(2.0f, 5f));
                       for (int i = 0; i <= 1; i++)
                       {
-                        EnemyType = Random.Range(0, 2);
+                        EnemyType = Random.Range(0, 3);
                           GameObject newEnemy = Instantiate(_enemyPrefab[EnemyType], posToSpawn, Quaternion.identity);
                           _wave[i] = newEnemy;
                           _wave[i].transform.parent = _enemyContainer.transform;
@@ -226,7 +226,7 @@ public class SpawnManager : MonoBehaviour
                     Debug.Log("PowerUp Wave 2");
                     break;
                 case 3:
-                    spawnTime[_enemyWave] = Random.Range(7f, 11f);
+                    spawnTime[_enemyWave] = Random.Range(6f, 10f);
                     Debug.Log("PowerUp Wave 3");
                     break;
                 case 4:
