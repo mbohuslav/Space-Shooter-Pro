@@ -43,6 +43,13 @@ public class Enemy_Elite : MonoBehaviour
     private bool  _isLaserActive=true;
     private bool _canfire = true;
 
+    [SerializeField]
+    private GameObject _leftEngineVisualizer, _rightEngineVisualizer, _leftEngineVisualizerOn, _rightEngineVisualizerOn, _rearEngineVisualizer;
+
+    RaycastHit2D hit;
+
+    
+
 
 
     // Start is called before the first frame update
@@ -57,6 +64,7 @@ public class Enemy_Elite : MonoBehaviour
         
         _audioSource = GetComponent<AudioSource>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+
 
         if (_anim == null)
         {
@@ -77,68 +85,126 @@ public class Enemy_Elite : MonoBehaviour
         _targetColor = Color.red;
 
         _currentLaserLength = 0;
-      
 
-
-
-}
+     
+       
+    }
 
     // Update is called once per frame
 
     private void EnemyMovement()
     {
         float velocity = _speed * Time.deltaTime;
-        if (transform.position.y != 3.82f && isCenterReached == false)
+
+        if (_leftEngineVisualizer != null && _rightEngineVisualizer != null && _leftEngineVisualizerOn != null && _rightEngineVisualizerOn != null)
         {
-            transform.position = Vector3.MoveTowards(transform.position, _targetPos, velocity);
-        }
-        if (transform.position.y == 3.82f)
-        {
-            isCenterReached = true;
-            int _move = Random.Range(0, 2);
-            switch (_move)
+            _leftEngineVisualizer.SetActive(false);
+
+            if (transform.position.y != 3.82f && isCenterReached == false)
             {
-                case 0:
-                    isRightReached = true;
-                    isLeftReached = false;
-                    break;
-                case 1:
-                    isRightReached = false;
-                    isLeftReached = true;
-                    break;
-                default:
-                    Debug.Log("Not a valid direction for Elite");
-                    break;
+
+                transform.position = Vector3.MoveTowards(transform.position, _targetPos, velocity);
+                return;
+            }
+            if (transform.position.y == 3.82f)
+            {
+                isCenterReached = true;
+                _rearEngineVisualizer.SetActive(false);
+                int _move = Random.Range(0, 2);
+                switch (_move)
+                {
+                    case 0:
+                        isRightReached = true;
+                        isLeftReached = false;
+                        break;
+                    case 1:
+                        isRightReached = false;
+                        isLeftReached = true;
+                        break;
+                    default:
+                        Debug.Log("Not a valid direction for Elite");
+                        break;
+                }
+            }
+            if (transform.position.x != 11.8f && isRightReached == false)
+            {
+                if (hit.collider != null && hit.collider.tag == "Laser")
+
+                {
+                    _rightEngineVisualizer.SetActive(false);
+                    _rightEngineVisualizerOn.SetActive(true);
+
+                    StartCoroutine(DodgeRight());
+                    Debug.Log("Elite Dodged Laser to the left");
+                }
+
+                else
+                {
+                    _rightEngineVisualizer.SetActive(true);
+                    _leftEngineVisualizer.SetActive(false);
+                    transform.position = Vector3.MoveTowards(transform.position, new Vector3(11.8f, 3.8f, 0f), velocity);
+                }
+            }
+            if (transform.position.x == 11.8f)
+            {
+                isRightReached = true;
+                isLeftReached = false;
+                _rightEngineVisualizer.SetActive(false);
+            }
+
+            if (transform.position.x != -11.8f && isLeftReached == false)
+            {
+                if (hit.collider != null && hit.collider.tag == "Laser")
+
+                {
+                    _leftEngineVisualizer.SetActive(false);
+                    _leftEngineVisualizerOn.SetActive(true);
+                    StartCoroutine(DodgeLeft());
+                    Debug.Log("Elite Dodged Laser to the right");
+                }
+
+                else
+                {
+                    _leftEngineVisualizer.SetActive(true);
+                    _rightEngineVisualizer.SetActive(false);
+                    transform.position = Vector3.MoveTowards(transform.position, new Vector3(-11.8f, 3.8f, 0f), velocity);
+
+                }
+
+            }
+            if (transform.position.x == -11.8f)
+            {
+                isRightReached = false;
+                isLeftReached = true;
+                _leftEngineVisualizer.SetActive(false);
             }
         }
+    }  
 
-        if (transform.position.x != 11.8f && isRightReached == false)
+    private IEnumerator DodgeRight()
+    {
+        float velocity = _speed * Time.deltaTime;
+        yield return new WaitForSeconds(0.1f);
+        transform.position = Vector3.MoveTowards(transform.position, new Vector3(13.8f, 3.8f, 0f), velocity * 3f);
+        yield return new WaitForSeconds(.5f);
+        if (_rightEngineVisualizer != null)
         {
-            transform.position = Vector3.MoveTowards(transform.position, new Vector3(11.8f, 3.8f, 0f), velocity);
+            _rightEngineVisualizerOn.SetActive(false);
+            _rightEngineVisualizer.SetActive(true);
         }
-        if (transform.position.x == 11.8f)
-        {
-            isRightReached = true;
-            isLeftReached = false;
-        }
-        if (transform.position.x != -11.8f && isLeftReached == false)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, new Vector3(-11.8f, 3.8f, 0f), velocity);
-        }
-        if (transform.position.x == -11.8f)
-        {
-            isRightReached = false;
-            isLeftReached = true;
-        }
+    }
 
-        // (_targetPos != new Vector3(0f, 3.9f, 0f))
-
-        // else
-        //  {
-        //    transform.position = Vector3.down * velocity;
-        //     transform.position = transform.position + axis * Mathf.Sin(Time.deltaTime * frequency) * magnitude;
-        //   }
-
+    private IEnumerator DodgeLeft()
+    {
+        float velocity = _speed * Time.deltaTime;
+        yield return new WaitForSeconds(0.1f);
+        transform.position = Vector3.MoveTowards(transform.position, new Vector3(-13.8f, 3.8f, 0f), velocity * 3f);
+        yield return new WaitForSeconds(0.5f);
+        if (_leftEngineVisualizer != null)
+        {
+            _leftEngineVisualizerOn.SetActive(false);
+            _leftEngineVisualizer.SetActive(true);
+        }
     }
 
    private void FireLaser()
@@ -149,9 +215,9 @@ public class Enemy_Elite : MonoBehaviour
 
             if (_isLaserActive == true)
             {
-              //  _audioSource.clip = _laserSound;
-              //  _audioSource.volume = 0.22f;
-              //  _audioSource.Play();
+                _audioSource.clip = _laserSound;
+                _audioSource.volume = 0.22f;
+                _audioSource.Play();
                 _currentLaserLength += _beamIncreaseSpeed * Time.deltaTime;
                 _currentLaserLength = Mathf.Min(_currentLaserLength, _maxLength);
                 _enemyLaserBeam.rectTransform.localScale = new Vector3(1.2f, _currentLaserLength, 1f);
@@ -166,9 +232,9 @@ public class Enemy_Elite : MonoBehaviour
             }
             if (_isLaserActive == false)
             {
-               // _audioSource.clip = _laserSound;
-              //  _audioSource.volume = 0.15f;
-               // _audioSource.Play();
+                //_audioSource.clip = _laserSound;
+               // _audioSource.volume = 0.15f;
+              //  _audioSource.Play();
                 _currentLaserLength -= _beamDecreaseSpeed * Time.deltaTime;
                 _currentLaserLength = Mathf.Clamp(0, _currentLaserLength, 0);
                 _enemyLaserBeam.rectTransform.localScale = new Vector3(1.2f, _currentLaserLength, 1f);
@@ -191,16 +257,21 @@ public class Enemy_Elite : MonoBehaviour
         EnemyMovement();
         FireLaser();
 
-
     }
 
+    private void FixedUpdate()
+    {
+        DodgePlayerFire();
+    }
 
-
-
-
-
-
-    private void OnTriggerEnter2D(Collider2D other)
+    private void DodgePlayerFire()
+    {
+        int layerMask = LayerMask.GetMask("Default");
+        hit = Physics2D.Raycast(transform.position, Vector2.down, Mathf.Infinity, layerMask);
+        Debug.Log("Raycast cast");
+       
+    }
+        private void OnTriggerEnter2D(Collider2D other)
     {
         
         if (other.tag == "Player")
@@ -290,7 +361,6 @@ public class Enemy_Elite : MonoBehaviour
             _eliteRenderer.color = _startingColor;
             yield return new WaitForSeconds(0.25f);
         }
-
 
     }
 }
