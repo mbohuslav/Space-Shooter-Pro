@@ -151,6 +151,7 @@ public class Enemy : MonoBehaviour
     }
     IEnumerator FireLaser()
     {
+        yield return new WaitForSeconds(Random.Range(0.01f, 1.0f));
         if (_canmove == true)
         {
 
@@ -158,28 +159,24 @@ public class Enemy : MonoBehaviour
             switch (firePattern)
             {
                 case 0:
-                    yield return new WaitForSeconds(Random.Range(0.1f, 1.0f));
                     Instantiate(_enemyLaserPrefab, transform.position + new Vector3(0, -0.584f, 0), Quaternion.identity);
-                    yield return new WaitForSeconds(Random.Range(1.5f, 3.0f));
+                    yield return new WaitForSeconds(Random.Range(2f, 3.0f));
                     if (_canmove == true)
                     { StartCoroutine(FireLaser()); }
                     break;
                 case 1:
-                    yield return new WaitForSeconds(Random.Range(0.01f, 1.0f));
                     Instantiate(_enemyLaserPrefab, transform.position + new Vector3(0, -0.584f, 0), Quaternion.identity);
                     yield return new WaitForSeconds(0.2f);
                     Instantiate(_enemyLaserPrefab, transform.position + new Vector3(0, -0.584f, 0), Quaternion.identity);
                     yield return new WaitForSeconds(0.2f);
                     Instantiate(_enemyLaserPrefab, transform.position + new Vector3(0, -0.584f, 0), Quaternion.identity);
-                    yield return new WaitForSeconds(Random.Range(2.0f, 3.0f));
+                    yield return new WaitForSeconds(Random.Range(3.0f, 4.0f));
                     if (_canmove == true)
                     { StartCoroutine(FireLaser()); }
                     break;
                 case 2:
-            
-                    yield return new WaitForSeconds(Random.Range(0.1f, 1.0f));
                     Instantiate(_enemyLaserPrefab, transform.position + new Vector3(0, -0.584f, 0), Quaternion.identity);
-                    yield return new WaitForSeconds(Random.Range(1.5f, 3.0f));
+                    yield return new WaitForSeconds(Random.Range(2f, 3.5f));
                     if (_canmove == true)
                     { StartCoroutine(FireLaser()); }
                     break;

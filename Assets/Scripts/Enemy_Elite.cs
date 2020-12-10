@@ -34,18 +34,15 @@ public class Enemy_Elite : MonoBehaviour
 
     public GameObject EliteChildHolder;
     [SerializeField]
-    private Image _enemyLaserBeam;
-    private float _beamDecreaseSpeed = 1.15f;
-    private float _beamIncreaseSpeed = 2.3f;
-    private float _maxLength = 2.3f;
-    private float _currentLaserLength;
-    [SerializeField]
-    private bool  _isLaserActive=true;
+    //private Image _enemyLaserBeam;
+   // [SerializeField]                    no longer neaded
+   // private bool  _isLaserActive=true;
     private bool _canfire = true;
 
     [SerializeField]
     private GameObject _leftEngineVisualizer, _rightEngineVisualizer, _leftEngineVisualizerOn, _rightEngineVisualizerOn, _rearEngineVisualizer;
-
+    [SerializeField]
+    private GameObject _enemyLaserPrefab;
     RaycastHit2D hit;
 
     
@@ -84,7 +81,7 @@ public class Enemy_Elite : MonoBehaviour
         _startingColor = Color.white;
         _targetColor = Color.red;
 
-        _currentLaserLength = 0;
+        //_currentLaserLength = 0; no longer needed
 
      
        
@@ -207,61 +204,36 @@ public class Enemy_Elite : MonoBehaviour
         }
     }
 
-   private void FireLaser()
-    {
-
-        if (_canfire == true)
-        {
-
-            if (_isLaserActive == true)
-            {
-                _audioSource.clip = _laserSound;
-                _audioSource.volume = 0.22f;
-                _audioSource.Play();
-                _currentLaserLength += _beamIncreaseSpeed * Time.deltaTime;
-                _currentLaserLength = Mathf.Min(_currentLaserLength, _maxLength);
-                _enemyLaserBeam.rectTransform.localScale = new Vector3(1.2f, _currentLaserLength, 1f);
-                _enemyLaserBeam.transform.Translate(Vector3.down * (4.795f + _beamIncreaseSpeed) * Time.deltaTime);
-
-                if (_currentLaserLength == _maxLength)
-                {
-                    _isLaserActive = false;
-                }
-
-
-            }
-            if (_isLaserActive == false)
-            {
-                //_audioSource.clip = _laserSound;
-               // _audioSource.volume = 0.15f;
-              //  _audioSource.Play();
-                _currentLaserLength -= _beamDecreaseSpeed * Time.deltaTime;
-                _currentLaserLength = Mathf.Clamp(0, _currentLaserLength, 0);
-                _enemyLaserBeam.rectTransform.localScale = new Vector3(1.2f, _currentLaserLength, 1f);
-                _enemyLaserBeam.transform.Translate(Vector3.up * (2.41f + _beamDecreaseSpeed) * Time.deltaTime);
-                // _enemyLaserBeam.transform.position = new Vector3(transform.position.x, -(_beamIncreaseSpeed / 2) * Time.deltaTime, transform.position.z);
-                if (_currentLaserLength == 0)
-                {
-                    ;
-                    _isLaserActive = true;
-                }
-            }
-        }
    
+    IEnumerator LaserBeam()
+    {
+    if (_canfire == true && hit.collider != null && hit.collider.tag == "Player" && _enemyLaserPrefab != null)
+    {
+            yield return new WaitForSeconds (0.2f);
+            _audioSource.clip = _laserSound;
+            _audioSource.volume = 0.40f;
+            _audioSource.Play();
+            _enemyLaserPrefab.SetActive(true);
+            yield return new WaitForSeconds(0.6f);
+            _enemyLaserPrefab.SetActive(false);
+            yield return new WaitForSeconds(2f);
+
+
+            //Instantiate(_enemyLaserPrefab, transform.position + new Vector3(0, -0.584f, 0), Quaternion.identity);
+
+
+        }
     }
-
-
-
-    void Update()
+          void Update()
     {
         EnemyMovement();
-        FireLaser();
-
     }
 
     private void FixedUpdate()
     {
+       
         DodgePlayerFire();
+        StartCoroutine(LaserBeam());
     }
 
     private void DodgePlayerFire()

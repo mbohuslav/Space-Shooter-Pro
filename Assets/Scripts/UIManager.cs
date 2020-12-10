@@ -171,13 +171,13 @@ public class UIManager : MonoBehaviour
          
         _scoreText.text = "Score: " + _playerScore;
 
-        if (_playerScore >= 50 && EnemyWave == 0)
+        if (_playerScore >= 100 && EnemyWave == 0)
         {   
             EnemyWave = 2;
             StartCoroutine(NewEnemyWave());
         }
                 
-       if (_playerScore >= 100 && EnemyWave == 1)
+       if (_playerScore >= 200 && EnemyWave == 1)
        {
             EnemyWave = 2;
             StartCoroutine(NewEnemyWave());

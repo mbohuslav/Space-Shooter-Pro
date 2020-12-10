@@ -63,7 +63,7 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator AsteroidSpawnRoutine()
     {
-        yield return new WaitForSeconds(Random.Range(12.0f, 20.0f));
+        yield return new WaitForSeconds(Random.Range(10.0f, 16.0f));
         Vector3 asteroidSpawnPos = new Vector3(Random.Range(-7f, 7f), 7f, 0);
         Instantiate(_asteroidPrefab, asteroidSpawnPos, Quaternion.identity);
     }
@@ -81,7 +81,7 @@ public class SpawnManager : MonoBehaviour
                   {     
                   case 0:
                       Debug.Log("0 wave playing");
-                      yield return new WaitForSeconds(Random.Range(3.0f, 6.0f));
+                      yield return new WaitForSeconds(Random.Range(4.0f, 7.0f));
                       for (int i = 0; i < 1; i++)
                       {
                           GameObject newEnemy = Instantiate(_enemyPrefab[EnemyType], posToSpawn, Quaternion.identity);
@@ -91,7 +91,7 @@ public class SpawnManager : MonoBehaviour
                       break;
                   case 1:
                       yield return new WaitForSeconds(Random.Range(3.0f, 6.0f));
-                      for (int i = 0; i <= 1; i++)
+                      for (int i = 0; i < 1; i++)
                       {
                         EnemyType = Random.Range(0, 2);
                         GameObject newEnemy = Instantiate(_enemyPrefab[EnemyType], posToSpawn, Quaternion.identity);
@@ -101,7 +101,7 @@ public class SpawnManager : MonoBehaviour
                       }
                        break;
                   case 2:
-                      yield return new WaitForSeconds(Random.Range(2.0f, 5f));
+                      yield return new WaitForSeconds(Random.Range(4.0f, 7.0f));
                       for (int i = 0; i <= 1; i++)
                       {
                         EnemyType = Random.Range(0, 3);
@@ -119,7 +119,7 @@ public class SpawnManager : MonoBehaviour
                         Instantiate(_enemyPrefab[3], posToSpawn, Quaternion.identity);
                         spawned[0] = true;
                     }
-                    yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
+                    yield return new WaitForSeconds(Random.Range(4.0f, 7.0f));
                       for (int i = 0; i <= 1; i++)
                       {
                         EnemyType = Random.Range(0, 3);
@@ -137,7 +137,7 @@ public class SpawnManager : MonoBehaviour
                      Instantiate(_enemyPrefab[3], posToSpawn, Quaternion.identity);
                         spawned[1] = true;
                     }
-                    yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
+                    yield return new WaitForSeconds(Random.Range(3.0f, 6.0f));
                       for (int i = 0; i <= 1; i++)
                       {
                         EnemyType = Random.Range(0, 3);
@@ -148,7 +148,7 @@ public class SpawnManager : MonoBehaviour
                       break;
                   case 5:
                       Debug.Log("5th wave playing");
-                      yield return new WaitForSeconds(Random.Range(3.0f, 7.0f));
+                      yield return new WaitForSeconds(Random.Range(5.0f, 8.0f));
                       for (int i = 0; i <= 2; i++)
                       {
                         EnemyType = Random.Range(0, 3);
@@ -165,7 +165,7 @@ public class SpawnManager : MonoBehaviour
                       Instantiate(_enemyPrefab[3], posToSpawn, Quaternion.identity);
                         spawned[2] = true;
                     }
-                      yield return new WaitForSeconds(Random.Range(3.0f, 7f));
+                      yield return new WaitForSeconds(Random.Range(4.0f, 7f));
                       for (int i = 0; i <= 2; i++)
                       {
                         EnemyType = Random.Range(0, 3);
@@ -182,7 +182,7 @@ public class SpawnManager : MonoBehaviour
                     Instantiate(_enemyPrefab[3], posToSpawn, Quaternion.identity);
                         spawned[3] = true;
                     }
-                    yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
+                    yield return new WaitForSeconds(Random.Range(3.0f, 6.0f));
                       for (int i = 0; i <= 2; i++)
                       {
                         EnemyType = Random.Range(0, 3);
@@ -214,31 +214,31 @@ public class SpawnManager : MonoBehaviour
             switch (_enemyWave)
             {
                 case 0:
-                    spawnTime[_enemyWave] = Random.Range(10f, 14f);
+                    spawnTime[_enemyWave] = Random.Range(9f, 13f);
                     Debug.Log("PowerUp Wave 0");
                     break;
                 case 1:
-                    spawnTime[_enemyWave] = Random.Range(9f, 13f);
+                    spawnTime[_enemyWave] = Random.Range(8f, 12f);
                     Debug.Log("PowerUp Wave 1");
                     break;
                 case 2:
-                    spawnTime[_enemyWave] = Random.Range(8f, 12f);
+                    spawnTime[_enemyWave] = Random.Range(7f, 11f);
                     Debug.Log("PowerUp Wave 2");
                     break;
                 case 3:
-                    spawnTime[_enemyWave] = Random.Range(6f, 10f);
+                    spawnTime[_enemyWave] = Random.Range(5f, 8f);
                     Debug.Log("PowerUp Wave 3");
                     break;
                 case 4:
-                    spawnTime[_enemyWave] = Random.Range(6f, 10f);
+                    spawnTime[_enemyWave] = Random.Range(5f, 7f);
                     Debug.Log("PowerUp Wave 4");
                     break;
                 case 5:
-                    spawnTime[_enemyWave] = Random.Range(5f, 9f);
+                    spawnTime[_enemyWave] = Random.Range(4f, 6f);
                     Debug.Log("PowerUp Wave 5");
                     break;
                 case 6:
-                    spawnTime[_enemyWave] = Random.Range(4f, 8f);
+                    spawnTime[_enemyWave] = Random.Range(3f, 6f);
                     Debug.Log("PowerUp Wave 6");
                     break;
                 default:
@@ -255,31 +255,31 @@ public class SpawnManager : MonoBehaviour
 
             if (randomPowerUp >= 0  && randomPowerUp <= 19)
             {
-                powerupID = 0;
+                powerupID = 0; //tripleShot
             }
             if(randomPowerUp >= 20 && randomPowerUp <= 39)
             {
-                powerupID = 1;
+                powerupID = 1; //Speed
             }
            if(randomPowerUp >= 40 && randomPowerUp <= 59)
             {
-                powerupID = 2;
+                powerupID = 2; //Shields
             }
-            if(randomPowerUp >= 60 && randomPowerUp <= 89)
+            if(randomPowerUp >= 60 && randomPowerUp <= 94)
             {
-                powerupID = 3;
+                powerupID = 3; //Ammo
             }
-            if(randomPowerUp >= 90 && randomPowerUp <= 104)
+            if(randomPowerUp >= 95 && randomPowerUp <= 109)
             {
-                powerupID = 4;
+                powerupID = 4; //Health
             }
-            if (randomPowerUp >= 105 && randomPowerUp <= 119)
+            if (randomPowerUp >= 110 && randomPowerUp <= 119)
             {
-                powerupID = 5;
+                powerupID = 5; //Homing Missile
             }
-            if (randomPowerUp >= 115 && randomPowerUp <= 129)
+            if (randomPowerUp >= 120 && randomPowerUp <= 129)
             {
-                powerupID = 6;
+                powerupID = 6; //Monkey Debuff
             }
 
             Instantiate(powerups[powerupID], posToSpawn, Quaternion.identity);
