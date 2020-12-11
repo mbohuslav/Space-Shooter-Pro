@@ -45,7 +45,9 @@ public class Enemy_Elite : MonoBehaviour
     private GameObject _enemyLaserPrefab;
     RaycastHit2D hit;
 
-    
+    //Elite immunity when it reaches 1 hitpoint out of 5
+    private float _ImmunityStart = 0f;
+    public float ImmunityDuration = 0.65f;
 
 
 
@@ -279,7 +281,7 @@ public class Enemy_Elite : MonoBehaviour
                 }
             }
         }
-      
+
         if (other.tag == "Laser")
         {
             if (_hitpoints > 0)
@@ -295,7 +297,7 @@ public class Enemy_Elite : MonoBehaviour
                 Destroy(other.gameObject);
                 Debug.Log("Laser destroyed");
                 _uiManager.UpdateScore(30);
-               // _eliteBlinking = false;
+                // _eliteBlinking = false;
                 _anim.SetTrigger("OnEnemyDeath");
                 _canfire = false;
                 _audioSource.volume = 0.22f;
@@ -309,11 +311,59 @@ public class Enemy_Elite : MonoBehaviour
                 Destroy(this.gameObject, 2.5f);
             }
         }
+
+        if (other.tag == "SuperPower")
+        {
+          
+            if (_hitpoints > 1)
+            {
+                _hitpoints =1;
+                _audioSource.volume = 0.10f;
+                _audioSource.Play();
+                _ImmunityStart = Time.time + ImmunityDuration;
+            }
+
+            if (_hitpoints < 1)
+            {
+                _uiManager.UpdateScore(30);
+                _anim.SetTrigger("OnEnemyDeath");
+                _canfire = false;
+                _audioSource.volume = 0.22f;
+                _audioSource.clip = _explosion;
+                _audioSource.Play();
+                transform.gameObject.tag = "Dead Enemy";
+                _speed = 0;
+                Destroy(GetComponent<Collider2D>());
+                foreach (Transform child in EliteChildHolder.transform)
+                    Destroy(child.gameObject);
+                Destroy(this.gameObject, 2.5f);
+            }
+        }
+
         if (_hitpoints == 1)
         {
             _eliteBlinking = true;
             StartCoroutine(ColorChange());
+
+            if ( _ImmunityStart <= Time.time)
+            {
+                _eliteBlinking = false;
+                _uiManager.UpdateScore(30);
+                _anim.SetTrigger("OnEnemyDeath");
+                _canfire = false;
+                _audioSource.volume = 0.22f;
+                _audioSource.clip = _explosion;
+                _audioSource.Play();
+                transform.gameObject.tag = "Dead Enemy";
+                _speed = 0;
+                Destroy(GetComponent<Collider2D>());
+                foreach (Transform child in EliteChildHolder.transform)
+                    Destroy(child.gameObject);
+                Destroy(this.gameObject, 2.5f);
+            }
+
         }
+
         else
         {
             _eliteBlinking = false;

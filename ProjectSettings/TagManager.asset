@@ -14,6 +14,7 @@ TagManager:
   - Enemy Laser
   - Dead Enemy
   - Enemy Shields
+  - SuperPower
   layers:
   - Default
   - TransparentFX

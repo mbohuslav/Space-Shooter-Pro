@@ -41,6 +41,10 @@ public class Enemy : MonoBehaviour
     //Ray casting firing speed
     float _FireRate = 2f;
     float _canFire = -1f;
+
+    
+
+
     
     // Start is called before the first frame update
     void Start()
@@ -56,6 +60,7 @@ public class Enemy : MonoBehaviour
         _enemyID = _spawnManager.EnemyType;
         _targetplayer = GameObject.FindWithTag("Player");
         _powerUp = GameObject.FindWithTag("PowerUp");
+
 
         if (_anim == null)
         {
@@ -228,9 +233,11 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {    
-
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+      
+        Debug.Log("collision triggered");
+       
         if (other.tag == "Player")
         {
 
@@ -245,13 +252,13 @@ public class Enemy : MonoBehaviour
                 {
                     _shieldVisualizer.SetActive(false);
                     _shieldsActive = false;
-                    _audioSource.Play();
+                     _audioSource.Play(); 
                 }
                 else
                 {
                     _canmove = false;
-                    _anim.SetTrigger("OnEnemyDeath");
                     _audioSource.Play();
+                    _anim.SetTrigger("OnEnemyDeath");
                     transform.gameObject.tag = "Dead Enemy";
                     Destroy(GetComponent<Collider2D>());
                     Destroy(this.gameObject, 2.5f);
@@ -266,27 +273,41 @@ public class Enemy : MonoBehaviour
             {
                 _shieldVisualizer.SetActive(false);
                 _shieldsActive = false;
-                _audioSource.Play();
+                 _audioSource.Play(); 
             }
             else
             {
-               // if (_uiManager != null)
-                //{
-                  //  if (_anim.GetCurrentAnimatorStateInfo(1).IsName("Enemy_Destroyed_anim"))
-                  //  {
-                   //     _audioSource.Play();
-                 //   }
-                    
-                        _uiManager.UpdateScore(10);
-                        _canmove = false;
-                        _anim.SetTrigger("OnEnemyDeath");
-                        _audioSource.Play();
-                        transform.gameObject.tag = "Dead Enemy";
+                        _audioSource.Play(); 
+                         _uiManager.UpdateScore(10);
+                          _canmove = false;
+                         _anim.SetTrigger("OnEnemyDeath");
+                         transform.gameObject.tag = "Dead Enemy";
                         Destroy(GetComponent<Collider2D>());
                         Destroy(this.gameObject, 2.5f);
               
             }
+
+          
         }
-    
+       
+        if (other.tag == "SuperPower")
+        {
+            Debug.Log("SUperpowerTriggered");
+            StartCoroutine(EnemyDestructionSequence());
+        }
+
+    }
+
+    IEnumerator EnemyDestructionSequence()
+    {
+        yield return new WaitForSeconds(0.01f);
+        _uiManager.UpdateScore(10);
+        _canmove = false;
+        _shieldVisualizer.SetActive(false);
+        _anim.SetTrigger("OnEnemyDeath");
+        _audioSource.Play();
+        transform.gameObject.tag = "Dead Enemy";
+        Destroy(GetComponent<Collider2D>());
+        Destroy(this.gameObject, 2.5f);
     }
 }

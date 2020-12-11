@@ -23,3 +23,5 @@ MonoBehaviour:
     m_Color: {r: 0.6184799, g: 0.9811321, b: 0.06016379, a: 1}
   - m_Name: Level 1 Green Shields
     m_Color: {r: 0.29463744, g: 0.9528302, b: 0.049439307, a: 1}
+  - m_Name: 
+    m_Color: {r: 0.15045391, g: 0.6509434, b: 0.2152231, a: 1}

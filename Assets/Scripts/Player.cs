@@ -45,6 +45,16 @@ public class Player : MonoBehaviour
     private GameObject[] _shieldVisualizer;
     [SerializeField]
     private GameObject[] _thrusterVisualizer;
+    [SerializeField]
+    private GameObject _superPower;
+    private Animator _animSuperPower;
+    [SerializeField]
+    private GameObject _sparks;
+    private Animator _animSparks;
+    private Enemy _enemy;
+    float _circleRadius = 0f;       //not needed anymore
+    float _circleRadiusMax = 1.3f;  //not needed anymore
+    bool _superPowerActive = true;
 
     [SerializeField]
     private GameObject _tripleShotPrefab;
@@ -61,6 +71,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     private AudioClip _MissileSound;
     [SerializeField]
+    private AudioClip _superPowerSound;
+    [SerializeField]
     private GameObject _explosionPrefab;
     public GameObject playerChildHolder;
     [SerializeField]
@@ -72,8 +84,10 @@ public class Player : MonoBehaviour
     private Color _startingColor;
     [SerializeField]
     private SpriteRenderer _playerRenderer;
-
+   
     public Vector3 PlayerTarget; // target for PowerUp Pickup
+
+
 
     void Start()
     {
@@ -84,7 +98,10 @@ public class Player : MonoBehaviour
         _accelRatePerSec = _maxSpeed / _timeZerotoMax;
         _mainCamera = GameObject.Find("Main Camera").GetComponent<Main_Camera>();
         _playerRenderer = GetComponent<SpriteRenderer>();
+        _animSuperPower = _superPower.GetComponent<Animator>();
+        _animSparks = _sparks.GetComponent<Animator>();
 
+        // _enemy = GameObject.FindWithTag("Enemy").GetComponent<Enemy>();
         if (_spawnManager == null)
         {
             Debug.LogError("The Spawn Manager is NULL.");
@@ -103,7 +120,7 @@ public class Player : MonoBehaviour
         }
         if (_playerRenderer == null)
         {
-            Debug.LogError(" Sprite REnderer is NULL");
+            Debug.LogError(" Sprite Renderer is NULL");
         }
 
         else
@@ -114,11 +131,15 @@ public class Player : MonoBehaviour
         //Color blinking routine setup
         _startingColor = Color.white;
         _targetColor = Color.red;
+
+    
     }
 
     void Update()
     {
         CalculateMovement();
+      
+        
 
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire && _lives > 0)
         {
@@ -132,9 +153,62 @@ public class Player : MonoBehaviour
             _uiManager.UpdateAmmo(_ammoCount);
         }
 
+        if (Input.GetKeyDown(KeyCode.Z) && _superPowerActive == true) //Activate SuperPower
+        {
+            _superPowerActive = false;
+            _uiManager._superPower.SetActive(false);
+            GetComponent<CircleCollider2D>().enabled = false;
+            _ImmunityStart = Time.time + ImmunityDuration;
+            _audioSource.volume = 1f;
+            _audioSource.clip = _superPowerSound;
+            _audioSource.Play();
+            _sparks.SetActive(true);
+            _animSparks.SetTrigger("ActivatePower");
+            _superPower.SetActive(true);
+            StartCoroutine(SuperPowerCooldown());
+           Time.timeScale = 0.5f;
+           
+
+        }
 
     }
-  
+
+    IEnumerator SuperPowerCooldown()
+    {
+        _superPowerActive = false;
+        yield return new WaitForSeconds(0.375f);
+        
+        if (_shieldsActive  == true)
+        {
+            Debug.Log("shields 0 being activated");
+            _shieldVisualizer[2].SetActive(false);
+            _shieldVisualizer[1].SetActive(false);
+            _shieldVisualizer[0].SetActive(true);
+        }
+     
+        yield return new WaitForSeconds(0.375f);
+        _superPower.GetComponent<CircleCollider2D>().radius = 0.25f;
+        _animSuperPower.SetTrigger("ActivatePower");
+        _shieldVisualizer[0].SetActive(false);
+        _shieldLevel = 0;
+        _shieldsActive = false;
+        _sparks.SetActive(false);
+        yield return new WaitForSeconds(0.15f);
+        Time.timeScale = 1f;
+        _superPower.GetComponent<CircleCollider2D>().radius = 0.5f;
+        yield return new WaitForSeconds(0.15f);
+        _superPower.GetComponent<CircleCollider2D>().radius = 0.85f;
+        yield return new WaitForSeconds(0.15f);
+        _superPower.GetComponent<CircleCollider2D>().radius = _circleRadiusMax;
+        yield return new WaitForSeconds(1f);
+        _circleRadius = 0;
+        _superPower.GetComponent<CircleCollider2D>().radius = _circleRadius;
+        _superPower.SetActive(false);
+        GetComponent<CircleCollider2D>().enabled = true;
+        yield return new WaitForSeconds(10f);
+        _uiManager._superPower.SetActive(true);
+        _superPowerActive = true;
+    }
   /*  private void Ontriggerstay(Collider2D other)
     {
         if (other.tag == "PowerUp" && Input.GetKeyDown(KeyCode.C))
@@ -280,10 +354,14 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
-        _audioSource.clip = _playerExplosion;
-        _audioSource.Play();
-        _audioSource.volume = 0.15f;
-        _mainCamera.shake();
+
+        
+        
+            _audioSource.clip = _playerExplosion;
+            _audioSource.Play();
+            _audioSource.volume = 0.15f;
+            _mainCamera.shake();
+        
 
         if (_shieldsActive == true && _ImmunityStart <= Time.time)
         {

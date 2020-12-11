@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
     private Text _scoreText;
     [SerializeField]
     private Image _LivesImg;
+    public GameObject _superPower;
     [SerializeField]
     private Sprite[] _livesprites;
     [SerializeField]
@@ -63,7 +64,7 @@ public class UIManager : MonoBehaviour
         {
             Debug.LogError("Player is NULL");
         }
-
+        
         _scoreText.text = "Score: " + 0;
         _gameOver.gameObject.SetActive(false);
         _restartText.gameObject.SetActive(false);
@@ -84,7 +85,11 @@ public class UIManager : MonoBehaviour
         {
         }
     }
-
+    public void isSuperPowerActive()
+    {
+        _superPower.SetActive(false);
+    }
+    
 
     public void Updatelives(int currentlives)
     {

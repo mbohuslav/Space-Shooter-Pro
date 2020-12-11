@@ -99,6 +99,23 @@ public class Asteroid_Small : MonoBehaviour
             _asteroidRotation.SetActive(false);
             Destroy(this.gameObject, 3.018f);
         }
+
+        if (other.tag == "SuperPower")
+        {
+
+            _uiManager.UpdateScore(20);
+            _anim.SetTrigger("OnEnemyDeath");
+            _audioSource.volume = 0.15f;
+            _audioSource.Play();
+            _speed = 0;
+            _rotationSpeed = 0;
+            transform.gameObject.tag = "Dead Enemy";
+            Destroy(GetComponent<Collider2D>());
+            _asteroidRotation.SetActive(false);
+            Destroy(this.gameObject, 3.018f);
+        }
+
+
     }
 
 

@@ -53,7 +53,16 @@ public class Asteroid : MonoBehaviour
             Destroy(GetComponent<Collider2D>());
             Destroy(this.gameObject, 3.018f);
         }
-    
+        
+        if (other.tag == "SuperPower")
+        {
+            Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
+            _uiManager.InitiateEnemyWave();
+            _spawnManager.StartSpawning();
+            Destroy(GetComponent<SpriteRenderer>(), 0.25f);
+            Destroy(GetComponent<Collider2D>());
+            Destroy(this.gameObject, 3.018f);
+        }
     }
    
 }
