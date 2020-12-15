@@ -37,7 +37,7 @@ public class PowerUp : MonoBehaviour
             target = _targetplayer.transform.position;
         }
 
-        while (_targetplayer != null && Input.GetKey(KeyCode.C) && distance <= 8f)
+        while (_targetplayer != null && Input.GetKey(KeyCode.C) && distance <= 10f)
           {
             
             AudioSource.PlayClipAtPoint(_tractorBeam, transform.position, 0.45f);

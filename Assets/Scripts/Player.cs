@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     private float _ammoRegen = 1.75f;
     private float _canRegen = -1;
     private float _ImmunityStart = 0f;
-    public float ImmunityDuration = 0.75f;
+    public float ImmunityDuration = 0.75f;  
 
     [SerializeField]
     private int _lives = 3;
@@ -74,7 +74,8 @@ public class Player : MonoBehaviour
     private AudioClip _superPowerSound;
     [SerializeField]
     private GameObject _explosionPrefab;
-    public GameObject playerChildHolder;
+    [SerializeField]
+    private GameObject playerChildHolder;
     [SerializeField]
     private GameObject _homingMissilePrefab;
 
@@ -180,7 +181,6 @@ public class Player : MonoBehaviour
         
         if (_shieldsActive  == true)
         {
-            Debug.Log("shields 0 being activated");
             _shieldVisualizer[2].SetActive(false);
             _shieldVisualizer[1].SetActive(false);
             _shieldVisualizer[0].SetActive(true);
@@ -200,6 +200,9 @@ public class Player : MonoBehaviour
         _superPower.GetComponent<CircleCollider2D>().radius = 0.85f;
         yield return new WaitForSeconds(0.15f);
         _superPower.GetComponent<CircleCollider2D>().radius = _circleRadiusMax;
+        _audioSource.volume = 0.50f;
+        _audioSource.clip = _playerExplosion;
+        _audioSource.Play();
         yield return new WaitForSeconds(1f);
         _circleRadius = 0;
         _superPower.GetComponent<CircleCollider2D>().radius = _circleRadius;
@@ -337,7 +340,7 @@ public class Player : MonoBehaviour
                   }
 
               _audioSource.clip = _laserSound;
-              _audioSource.volume = 0.25f;
+              _audioSource.volume = 0.20f;
               _audioSource.Play();
              _uiManager.UpdateAmmo(_ammoCount);
              }
@@ -359,7 +362,7 @@ public class Player : MonoBehaviour
         
             _audioSource.clip = _playerExplosion;
             _audioSource.Play();
-            _audioSource.volume = 0.15f;
+            _audioSource.volume = 0.10f;
             _mainCamera.shake();
         
 
@@ -380,7 +383,7 @@ public class Player : MonoBehaviour
                     _shieldVisualizer[0].SetActive(true);
                     break;
                 case 2:
-                    _shieldVisualizer[2].SetActive(false);
+                    _shieldVisualizer[2].SetActive(false);  
                     _shieldVisualizer[1].SetActive(true);
                     break;
                 default:

@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField]
     private float _speed = 4f;
-   // private Player _player;
+    // private Player _player;
     private Animator _anim;
     [SerializeField]
     private AudioSource _audioSource;
@@ -27,7 +27,7 @@ public class Enemy : MonoBehaviour
     public int firePattern;
     GameObject _powerUp;
     // player tracking for movetowards
-    
+
     GameObject _targetplayer;
 
     private Vector3 target;
@@ -42,16 +42,23 @@ public class Enemy : MonoBehaviour
     float _FireRate = 2f;
     float _canFire = -1f;
 
-    
+   static int num; // to give each clone a unique 
+
+    void Awake()
+    {
+
+      //  name += num.ToString();
+      //  ++num;
+
+    }
 
 
-    
-    // Start is called before the first frame update
-    void Start()
+
+void Start()
     {
         pos = transform.position;
         axis = transform.right;
-        _enemyMoveType = Random.Range(0,4);
+        _enemyMoveType = Random.Range(0, 4);
         transform.position = new Vector3(Random.Range(-11f, 11f), 9f, 0);
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _anim = GetComponent<Animator>();
@@ -91,8 +98,13 @@ public class Enemy : MonoBehaviour
         if (_enemyName == "Enemy0b(Clone)")
         { firePattern = 2; }
 
-       StartCoroutine(FireLaser());
+      //   if (_enemyName == "Spawned Fighter 1(Clone)" )
+      //  { name += num.ToString();
+       //     ++num;
+      //  }
       
+        StartCoroutine(FireLaser());
+
     }
 
     // Update is called once per frame
@@ -100,12 +112,12 @@ public class Enemy : MonoBehaviour
     {
         if (_canmove == true)
         {
-           
-            
+
+
 
             float distance = Vector3.Distance(target, transform.position);
             float velocity = _speed * Time.deltaTime;
-            if(_targetplayer != null)
+            if (_targetplayer != null)
             {
                 target = _targetplayer.transform.position;
             }
@@ -151,7 +163,7 @@ public class Enemy : MonoBehaviour
                 transform.position = new Vector3(randomX, 9f, 0);
                 pos = transform.position;
             }
-        }  
+        }
 
     }
     IEnumerator FireLaser()
@@ -191,8 +203,8 @@ public class Enemy : MonoBehaviour
             }
         }
         else
-        { 
-            Debug.Log("Lasers are disabled"); 
+        {
+            Debug.Log("Lasers are disabled");
         }
     }
 
@@ -205,8 +217,8 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    
-    
+
+
     private void FireAtPowerUp()
     {
         int layerMask = LayerMask.GetMask("Default");
@@ -217,7 +229,7 @@ public class Enemy : MonoBehaviour
             _canFire = Time.time + _FireRate;
             Instantiate(_enemyLaserPrefab, transform.position + new Vector3(0, -0.584f, 0), Quaternion.identity);
             Debug.Log("PowerUp Fired at");
-        }        
+        }
     }
 
     private void FireAtPlayer()
@@ -235,9 +247,7 @@ public class Enemy : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D other)
     {
-      
-        Debug.Log("collision triggered");
-       
+
         if (other.tag == "Player")
         {
 
@@ -252,7 +262,7 @@ public class Enemy : MonoBehaviour
                 {
                     _shieldVisualizer.SetActive(false);
                     _shieldsActive = false;
-                     _audioSource.Play(); 
+                    _audioSource.Play();
                 }
                 else
                 {
@@ -264,50 +274,55 @@ public class Enemy : MonoBehaviour
                     Destroy(this.gameObject, 2.5f);
                 }
             }
-        } 
+        }
         if (other.tag == "Laser")
         {
             Destroy(other.gameObject);
-           
+
             if (_enemyID == 2 && _shieldsActive == true)
             {
                 _shieldVisualizer.SetActive(false);
                 _shieldsActive = false;
-                 _audioSource.Play(); 
+                _audioSource.Play();
             }
             else
             {
-                        _audioSource.Play(); 
-                         _uiManager.UpdateScore(10);
-                          _canmove = false;
-                         _anim.SetTrigger("OnEnemyDeath");
-                         transform.gameObject.tag = "Dead Enemy";
-                        Destroy(GetComponent<Collider2D>());
-                        Destroy(this.gameObject, 2.5f);
-              
+                _audioSource.Play();
+                _uiManager.UpdateScore(10);
+                _canmove = false;
+                _anim.SetTrigger("OnEnemyDeath");
+                transform.gameObject.tag = "Dead Enemy";
+                Destroy(GetComponent<Collider2D>());
+                Destroy(this.gameObject, 2.5f);
+
             }
 
-          
         }
-       
+
         if (other.tag == "SuperPower")
+
         {
-            Debug.Log("SUperpowerTriggered");
-            StartCoroutine(EnemyDestructionSequence());
+            if (_enemyID == 2 && _shieldsActive == true)
+            {
+                _shieldVisualizer.SetActive(false);
+                _shieldsActive = false;
+                _audioSource.Play();
+            }
+            else
+            {
+                Debug.Log("SUperpowerTriggered");
+                _uiManager.UpdateScore(10);
+                _canmove = false;
+                _shieldVisualizer.SetActive(false);
+                _anim.SetTrigger("OnEnemyDeath");
+                _audioSource.Play();
+                transform.gameObject.tag = "Dead Enemy";
+                Destroy(GetComponent<Collider2D>());
+                Destroy(this.gameObject, 2.5f);
+            }
+
+
         }
-
-    }
-
-    IEnumerator EnemyDestructionSequence()
-    {
-        yield return new WaitForSeconds(0.01f);
-        _uiManager.UpdateScore(10);
-        _canmove = false;
-        _shieldVisualizer.SetActive(false);
-        _anim.SetTrigger("OnEnemyDeath");
-        _audioSource.Play();
-        transform.gameObject.tag = "Dead Enemy";
-        Destroy(GetComponent<Collider2D>());
-        Destroy(this.gameObject, 2.5f);
     }
 }
+   

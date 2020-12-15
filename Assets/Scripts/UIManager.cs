@@ -11,6 +11,8 @@ public class UIManager : MonoBehaviour
     private Image _LivesImg;
     public GameObject _superPower;
     [SerializeField]
+    private Animator _animSuperPower;
+    [SerializeField]
     private Sprite[] _livesprites;
     [SerializeField]
     private Text _gameOver;
@@ -30,7 +32,7 @@ public class UIManager : MonoBehaviour
     private AudioClip _gameOverSound;
     [SerializeField]
     private Image _thrusterReserve;
-    private float _depletionRate = 0.30f;
+    private float _depletionRate = 0.25f;
     private float _ThrusterRecharge = 0.15f;
     private float _ThrusterAccelRecharge = 1f;
     private float _maxThrusterReserve = 1.75f;
@@ -45,7 +47,7 @@ public class UIManager : MonoBehaviour
     private GameManager _gameManager;
     private SpawnManager _spawnManager;
     public int EnemyWave;
-
+    public AudioSource[] BackgroundMusic;
 
 
     // Start is called before the first frame update
@@ -53,7 +55,7 @@ public class UIManager : MonoBehaviour
     {
         _player = GameObject.Find("Player").GetComponent<Player>();
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
-        //EnemyWave = 0;
+        
 
         if (_spawnManager == null)
         {
@@ -176,9 +178,11 @@ public class UIManager : MonoBehaviour
          
         _scoreText.text = "Score: " + _playerScore;
 
-        if (_playerScore >= 100 && EnemyWave == 0)
+        if (_playerScore >= 10 && EnemyWave == 0)
         {   
-            EnemyWave = 2;
+            EnemyWave = 7;
+            Debug.Log("Boss Wave started");
+            BackgroundMusic[0].Pause();
             StartCoroutine(NewEnemyWave());
         }
                 
@@ -215,6 +219,8 @@ public class UIManager : MonoBehaviour
         {
             EnemyWave = 7;
             StartCoroutine(NewEnemyWave());
+            BackgroundMusic[0].Pause();
+            BackgroundMusic[1].Play();
         }
 
 
@@ -233,6 +239,11 @@ public class UIManager : MonoBehaviour
         _audioSource.Play();
         yield return new WaitForSeconds(0.28f);
         _newEnemyWave.gameObject.SetActive(false);
+        if (EnemyWave ==7)
+        {
+            BackgroundMusic[1].Play();
+            StartCoroutine(BossMusicVolumeControl());
+        }
         yield return new WaitForSeconds(0.28f);
         _newEnemyWave.gameObject.SetActive(true);
         yield return new WaitForSeconds(0.28f);
@@ -246,8 +257,15 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(0.28f);
         _newEnemyWave.gameObject.SetActive(false);
         yield return new WaitForSeconds(0.28f);
+
+
+
     }
 
-
+    IEnumerator BossMusicVolumeControl()
+    {
+        yield return new WaitForSeconds(14f);
+        BackgroundMusic[1].volume = 0.06f;
+    }
 
 }

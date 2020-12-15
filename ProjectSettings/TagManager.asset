@@ -15,6 +15,15 @@ TagManager:
   - Dead Enemy
   - Enemy Shields
   - SuperPower
+  - Boss
+  - Explosion_Left_Front
+  - Explosion_Right_Front
+  - Explosion_Left_Back
+  - Explosion_Right_Back
+  - Explosion_Center
+  - Explosion_Left_Center
+  - Explosion_Right_Center
+  - Explosion_Engine
   layers:
   - Default
   - TransparentFX

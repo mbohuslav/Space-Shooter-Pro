@@ -5,7 +5,7 @@ using UnityEngine;
 public class Enemy_Laser : MonoBehaviour
 {
     [SerializeField]
-    private float _speed = 10f;
+    private float _speed = 8f;
     private Player _player;
     [SerializeField]
     private AudioSource _audioSource;
